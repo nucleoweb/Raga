@@ -38,7 +38,7 @@
                                             @foreach($correos as $correo)
                                                 @php
                                                     $context = json_decode($correo->context, true); // Decode as an associative array
-                                                    $data = $context['data'];
+                                                    $data = $context['data'] ?? [];
                                                 @endphp
                                                 <tr>
                                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
