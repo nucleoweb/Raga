@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Log extends Model {
     use HasFactory;
 
-    protected $fillable = ['message', 'context', 'id'];
+    protected $fillable = ['message', 'context', 'id', 'response'];
 }

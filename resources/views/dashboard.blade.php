@@ -6,7 +6,7 @@
     </x-slot>
 
     @php
-        $correos = \App\Models\Log::all();
+        $correos = \App\Models\Log::orderBy('id', 'desc')->get();
     @endphp
 
     <div class="py-12">
@@ -29,6 +29,7 @@
                                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Email</th>
                                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Asunto</th>
                                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Body</th>
+                                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Respuesta AI</th>
                                             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
                                                 <span class="sr-only">Edit</span>
                                             </th>
@@ -52,6 +53,9 @@
                                                     </td>
                                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                         {{ $data['body'] ?? 'Body not available' }}
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                        {{ $correo->response ?? 'Response not available' }}
                                                     </td>
                                                 </tr>
                                             @endforeach
