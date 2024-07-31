@@ -41,7 +41,7 @@ class ApiController extends Controller {
         $result = OpenAI::chat()->create([
             'model' => 'gpt-4o-mini',
             'messages' => [
-                ['role' => 'user', 'content' => "Toma este requerimiento". $body ." y detecta los siguientes campos: 1. Origen, 2. Destino, 3. Tamaño del contenedor, 4. Peso, 5. Condiciones especiales. Entrega los datos ordenados"],
+                ['role' => 'user', 'content' => "Toma este requerimiento". $body ." y detecta los siguientes campos: 1. Origen, 2. Destino, 3. Tamaño del contenedor, 4. Peso, 5. Condiciones especiales. Entrega los datos ordenados y al final de tu respuesta pega la solicitud recibida por correo."],
             ],
         ]);
 
