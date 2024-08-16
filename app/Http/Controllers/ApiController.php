@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PriceNotFound;
 use App\Mail\ResponseEmail;
 use App\Models\Log as LogModel;
 use Illuminate\Http\Request;
@@ -39,6 +40,9 @@ class ApiController extends Controller {
             return response()->json(['message' => 'data saved', 'data' => $data, 'Query' => $query], 201);
         } catch (\Exception $e) {
             Log::error('Error saving email', ['error' => $e->getMessage()]);
+
+            Mail::to($email)->send(new PriceNotFound());
+
             return response()->json(['message' => 'error saving data'], 500);
         }
     }
