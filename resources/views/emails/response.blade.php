@@ -13,7 +13,11 @@
 
 <body>
 <br>
-Estimado cliente, adjunto cotización en base a su requerimiento.
+Estimado/a [Nombre del Cliente],
+
+Gracias por tu solicitud de cotización. Hemos revisado los detalles de tu pedido y me complace informarte que hemos encontrado la mejor opción para el transporte solicitado.
+<br>
+Detalles de la cotización:
 <br>
 <br>
 @if(isset($response) && is_array($response) && count($response) > 0)
@@ -25,18 +29,20 @@ Estimado cliente, adjunto cotización en base a su requerimiento.
             <li>Tipo de Transporte: {{ $item['tipo_de_transporte'] }}</li><br>
             <li>Tarifa de Transporte Base: {{ $item['tarifa_de_transporte_base'] }}</li><br>
             <li>Tarifa USD/KG: {{ $item['tarifa_usd_kg'] ?? 'N/A' }}</li><br>
-            <li>Margen Aplicado: {{ $item['margen_aplicado'] }}</li><br>
         @endforeach
     </ul>
 @else
-    <p>No data available.</p>
+    <p>{!! nl2br(e($response)) !!}</p>
 @endif
 <br>
 <br>
-Saludos cordiales,
+Por favor, revisa esta información y háznos saber si necesitas alguna modificación a tu solicitud o alguna información adicional.
+
+<br>
+Quedamos atentos a tu respuesta.
 <br>
 <br>
-Raga AI
+Raga
 </body>
 
 </html>

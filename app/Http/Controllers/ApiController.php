@@ -19,7 +19,7 @@ class ApiController extends Controller {
 
         try {
             $response = $this->processInformationByAi($body);
-            $query = $this->getTransportRates($response);
+            //$query = $this->getTransportRates($response);
 
             $data = LogModel::create([
                 'message' => 'Email saved',
@@ -27,17 +27,15 @@ class ApiController extends Controller {
                 'response' => $response,
             ]);
 
-            Log::info('Data saved', ['data' => $data, 'query' => $query]);
+            Log::info('Data saved', ['data' => $data]);
 
-            // Decode the query response to pass the data array to the mailable
-            $queryData = json_decode($query->getContent(), true);
+            //$queryData = json_decode($query->getContent(), true);
 
-            // Access the data from the stdClass object
-            $dataArray = $queryData['data'];
+            //$dataArray = $queryData['data'];
 
-            Mail::to($email)->send(new ResponseEmail($dataArray));
+            Mail::to($email)->send(new ResponseEmail($response));
 
-            return response()->json(['message' => 'data saved', 'data' => $data, 'Query' => $query], 201);
+            return response()->json(['message' => 'data saved', 'data' => $data], 201);
         } catch (\Exception $e) {
             Log::error('Error saving email', ['error' => $e->getMessage()]);
 
@@ -57,20 +55,13 @@ class ApiController extends Controller {
                     'role' => 'user',
                     'content' => "
                     Toma este requerimiento". $body ."
-                    te dejo un ejemplo de query correcta SELECT origen, destino, tipo_de_transporte, tarifa_de_transporte_base, tarifa_usd_kg, margen_aplicado FROM transport_rates WHERE (origen = 'Manzanillo' OR origen = 'Puntarenas' OR origen = 'Limon') AND destino = 'Savannha, GA Port, USA' AND fecha_de_vigencia IS NOT NULL;
-                    detecta los campo mas importantes y revisa la estructura.
-                    y  Tengo la siguiente estructura de tabla en MySQL:
-                    -  Nombre de la tabla es transport_rates
-                    - origen (string, nullable)
-                    - destino (string, nullable)
-                    - tipo_de_transporte (string, [Marítimo, Aéreo, Terrestre], nullable)
-                    - tarifa_de_transporte_base (decimal(10, 2), nullable)
-                    - tarifa_usd_kg (decimal(10, 2), nullable)
-                    - margen_aplicado (decimal(5, 2), nullable)
-                    - id_del_envio (string, nullable)
-                    - fecha_de_vigencia (date, nullable)
-                    En base a la requerimiento  devuelve solo la query para ejecutar.
-                    Evita agregar texto que no sea la query"
+                    detecta dentro del texto los siguientes campos:
+                    - ciudad y/o puerto de origen
+                    - ciudad y/o puerto destino
+                    - tipo_de_transporte
+                    - tamaño de la carga
+                    - peso de la carga
+                    En caso de no detectar alguno de los campos, por favor, solicita la información faltante."
                 ],
             ],
         ]);
@@ -88,12 +79,10 @@ class ApiController extends Controller {
             Log::info('Executing query', ['query' => $cleanedQuery]);
             $results = DB::select($cleanedQuery);
 
-            // Ensure results are not empty
             if (empty($results)) {
                 return response()->json(['message' => 'No data available'], 200);
             }
 
-            // Extract the data field
             $data = array_map(function($item) {
                 return (array) $item;
             }, $results);
