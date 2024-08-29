@@ -53,15 +53,21 @@ class ApiController extends Controller {
             'messages' => [
                 [
                     'role' => 'user',
-                    'content' => "
-                    Toma este requerimiento". $body ."
-                    detecta dentro del texto los siguientes campos:
-                    - ciudad y/o puerto de origen
-                    - ciudad y/o puerto destino
-                    - tipo_de_transporte
-                    - tamaño de la carga
-                    - peso de la carga
-                    En caso de no detectar alguno de los campos, por favor, solicita la información faltante."
+                    'content' =>
+			    "Toma este requerimiento: $body .
+			Detecta dentro del texto los siguientes campos:
+			- Ciudad y/o puerto de origen
+			- Ciudad y/o puerto destino
+			- Tipo de transporte (terrestre, marítimo, aéreo)
+			- Peso de la carga
+			- Naviera o carrier (si se menciona)
+			La cotización se compone de: Costos de puerto (port charges), costos de transporte (transport charges), los cuales se se aplica una política de magen del 18%, y luego se suma. Si no tienes accesos a una base de datos, simula los costos y entrega la cotización.
+			Estructura tu respuesta como si fuera una cotización formal por correo electrónico, no muestres los cálculos, solo muestra los totales por categoría. No muestres el margen en la respuesta, es información que el cliente no debe ver, sólo calcula los costos con el margen aplicado y ese monto total por categoría es la respuesta que debes dar
+			En caso de no detectar alguno de los campos, por favor, solicita la información faltante.
+			Si hay información adicional que consideres relevante para la cotización, indícalo o pregúntalo también.
+			Realiza una consulta en la base de datos para obtener los costos necesarios para cotizar el transporte según la información detectada.
+			**Nota:** Si recibes una solicitud que no sea una cotización de transporte, contesta brevemente la pregunta que te hayan hecho y luego indica que eres un agente especializado en cotizaciones de transporte internacional.
+			En caso de no tener acceso a la db simula un precio aproximado. Esto es solo una referencia para una prueba de concepto."
                 ],
             ],
         ]);
