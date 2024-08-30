@@ -114,6 +114,7 @@
 				    AND allowed_carriers LIKE '%evergreen%';
 				
 				No incluyas las fechas ejemplo     AND effective_date <= CURDATE()  AND (expire_date IS NULL OR expire_date >= CURDATE())
+				Las tablas tienen el nombre de port_charges y land_charges
 				Es posible que los nombres de los puertos (`pol`, `pod`) y las ciudades (`port_cfs_airport_name`) no estén escritos correctamente o que se utilicen abreviaciones o variantes. Por favor, trata de deducir el nombre correcto del puerto o la ciudad utilizando la información disponible, como el país de origen, el país de destino y otras pistas contextuales.
 				Genera una consulta SQL que combine las tablas `PortCharges` y `LandCharges` para calcular el costo total del transporte de un producto específico (`product_type`) desde un puerto de carga (`pol`) hasta una ubicación terrestre específica (`port_cfs_airport_name`). La consulta debe considerar cualquier regla de cálculo, corregir posibles errores en los nombres de puertos y ciudades, y filtrar por fechas vigentes (entre `effective_date` y `expire_date`). La consulta debe retornar el costo total en la moneda especificada (`currency`) y estar optimizada para ejecutar de manera eficiente.
 				Solo devuelve la consulta sql.",
