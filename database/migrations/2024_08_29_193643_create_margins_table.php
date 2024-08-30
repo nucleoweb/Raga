@@ -12,9 +12,9 @@
 		{
 			Schema::create('margins', function (Blueprint $table) {
 				$table->id();
-				$table->string('product_type')->nullable();
-				$table->string('service_type')->nullable();
-				$table->decimal('default_margin', 5, 2)->nullable();
+				$table->string('type')->nullable();
+				$table->text('description')->nullable();
+				$table->decimal('origin_of_expenses', 5, 2)->nullable();
 				$table->timestamps();
 			});
 		}

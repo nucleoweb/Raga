@@ -18,23 +18,37 @@
 				'service_type' => $row[1],
 				'origin_country' => $row[2],
 				'pol' => $row[3],
-				'pod' => $row[4],
-				'destination_country' => $row[5],
-				'carrier' => $row[6],
-				'supplier' => $row[7],
-				'charge_name' => $row[8],
-				'calculation_rule' => $row[9],
-				'cost' => $row[10],
-				'currency' => $row[11],
-				'container_type' => $row[12],
-				'goods_type' => $row[13],
-				'effective_date' => $row[14],
-				'expire_date' => $row[15],
-				'sell_rate' => $row[16],
-				'internal_notes' => $row[17],
-				'external_notes' => $row[18],
-				'min_weight' => $row[19],
-				'max_weight' => $row[20],
+				'via' => $row[4],
+				'pod' => $row[5],
+				'dest_country' => $row[6],
+				'carrier' => $row[7],
+				'supplier' => $row[8],
+				'supplier_charge_name' => $row[9],
+				'internal_charge_name' => $row[10],
+				'calculation_rule' => $row[11],
+				'cost' => $this->transformDecimal($row[12]),
+				'currency' => $row[13],
+				'goodstype' => $row[14],
+				'publish_date' => $this->transformDate($row[15]),
+				'effective_date' => $this->transformDate($row[16]),
+				'expire_date' => $this->transformDate($row[17]),
+				'sell_rate' => $this->transformDecimal($row[18]),
+				'internal_notes' => $row[19],
+				'external_notes' => $row[20],
+				'pricing_notes' => $row[21],
 			]);
+		}
+		
+		public function transformDate($value, $format = 'Y-m-d') {
+			try {
+				return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format($format);
+			} catch (\Exception $e) {
+				return null;
+			}
+		}
+		
+		public function transformDecimal($value) {
+			$value = str_replace(',', '.', $value);
+			return is_numeric($value) ? (float) $value : null;
 		}
 	}
