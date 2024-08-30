@@ -9,27 +9,28 @@ return new class extends Migration
 	public function up() {
 		Schema::create('port_charges', function (Blueprint $table) {
 			$table->id();
-			$table->string('product_type')->nullable();
-			$table->string('service_type')->nullable();
-			$table->string('origin_country')->nullable();
-			$table->string('pol')->nullable(); 
-			$table->string('pod')->nullable();
-			$table->string('destination_country')->nullable();
-			$table->string('carrier')->nullable();
-			$table->string('supplier')->nullable();
-			$table->string('charge_name')->nullable();
-			$table->string('calculation_rule')->nullable();
+			$table->string('product_type', 100)->nullable();
+			$table->string('service_type', 100)->nullable();
+			$table->string('origin_country', 100)->nullable();
+			$table->string('pol', 100)->nullable();
+			$table->string('via', 100)->nullable();
+			$table->string('pod', 100)->nullable();
+			$table->string('dest_country', 100)->nullable();
+			$table->string('carrier', 100)->nullable();
+			$table->string('supplier', 150)->nullable();
+			$table->string('supplier_charge_name', 150)->nullable();
+			$table->string('internal_charge_name', 150)->nullable();
+			$table->string('calculation_rule', 100)->nullable();
 			$table->decimal('cost', 10, 2)->nullable();
-			$table->string('currency')->nullable();
-			$table->string('container_type')->nullable();
-			$table->string('goods_type')->nullable();
+			$table->string('currency', 10)->nullable();
+			$table->string('goodstype', 100)->nullable();
+			$table->date('publish_date')->nullable();
 			$table->date('effective_date')->nullable();
 			$table->date('expire_date')->nullable();
-			$table->boolean('sell_rate')->nullable();
+			$table->decimal('sell_rate', 10, 2)->nullable();
 			$table->text('internal_notes')->nullable();
 			$table->text('external_notes')->nullable();
-			$table->decimal('min_weight', 10, 2)->nullable();
-			$table->decimal('max_weight', 10, 2)->nullable();
+			$table->text('pricing_notes')->nullable();
 			$table->timestamps();
 		});
 	}
