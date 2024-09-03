@@ -13,16 +13,50 @@
         <!-- Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="antialiased font-sans">
-        <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
-            <img id="background" class="absolute -left-20 top-0 max-w-[877px]" src="https://laravel.com/assets/img/welcome/background.svg" />
-            <div class="relative min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-                <div class="w-full">
-                    <header class="flex justify-center px-10">
-                        @if (Route::has('login'))
-                            <livewire:welcome.navigation />
-                        @endif
-                    </header>
+    <body>
+        <header class="py-[20px] shadow-header fixed top-0 left-0 w-full">
+            <div class="container m-auto flex justify-end">
+                <div class="flex gap-6">
+                    <a href="{{ route('login') }}" class="h-[40px] border-[2px] rounded-[56px] border-[#3C5BFF] flex justify-center items-center w-[180px] text-[16px] text-[#3C5BFF] font-bold hover:bg-[#3C5BFF] hover:text-white transition-all">
+                        Iniciar Sesión
+                    </a>
+
+                    <a href="{{ route('register') }}" class="h-[40px] border-[2px] rounded-[56px] border-[#3C5BFF] flex justify-center items-center w-[180px] text-[16px]  font-bold bg-[#3C5BFF] text-white hover:bg-white hover:text-[#3C5BFF] transition-all">
+                        Registrase
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="bg-home-hero h-screen bg-no-repeat bg-center flex justify-center items-center flex-col">
+            <div class="flex flex-col justify-center items-center">
+                <figure class="mb-[30px]">
+                    <img src="{{ asset('img/logo.svg') }}" alt="">
+                </figure>
+                <a href="{{ route('login') }}" class="h-[40px] border-[2px] rounded-[56px] border-[#3C5BFF] flex justify-center items-center w-[180px] text-[16px]  font-bold bg-[#3C5BFF] text-white hover:bg-transparent hover:text-[#3C5BFF] transition-all">
+                    Iniciar
+                </a>
+            </div>
+
+            <div class="grid grid-cols-4 gap-[60px] mt-[200px] max-w-[1100px] hidden">
+                <div>
+                    <h3 class="font-bold text-[40px] mb-[30px]">Cotiza</h3>
+                    <p class="text-[18px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-[40px] mb-[30px]">Rastrea</h3>
+                    <p class="text-[18px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-[40px] mb-[30px]">Aduana</h3>
+                    <p class="text-[18px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-[40px] mb-[30px]">Opera</h3>
+                    <p class="text-[18px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. </p>
                 </div>
             </div>
         </div>
