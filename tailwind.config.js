@@ -14,6 +14,12 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            boxShadow: {
+                'header': '0px 4px 30px 0px rgba(230, 229, 234, 0.75);',
+            },
+            backgroundImage: {
+                'home-hero': "url('/public/img/home-bg.png')",
+            },
         },
     },
 
