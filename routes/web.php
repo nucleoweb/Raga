@@ -5,6 +5,11 @@ use App\Livewire\Pages\Uploads;
 
 
 Route::view('/', 'welcome');
+
+Route::get('/logs', \App\Livewire\Pages\Logs::class)
+    ->middleware(['auth'])
+    ->name('logs');
+
 Route::get('/uploads', Uploads::class)
 	->middleware(['auth'])
 	->name('uploads');
