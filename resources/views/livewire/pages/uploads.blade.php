@@ -4,7 +4,7 @@
 			{{ __('Dashboard') }}
 		</h2>
 	</x-slot>
-	
+
 	@if (session()->has('message'))
 		<div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 			<div class=" overflow-hidden">
@@ -29,7 +29,7 @@
 			</div>
 		</div>
 	@endif
-	
+
 	<div class="py-12">
 		<div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 			<div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-10">
@@ -61,7 +61,7 @@
 					<div class="px-4 sm:px-6 lg:px-8">
 						<div class="sm:flex sm:items-center">
 							<div class="sm:flex-auto">
-								<h1 class="text-base font-semibold leading-6 text-gray-900">Upload Inland Charges</h1>
+								<h1 class="text-base font-semibold leading-6 text-gray-900">Upload Land Charges</h1>
 							</div>
 						</div>
 						<div class="mt-8 flow-root">
