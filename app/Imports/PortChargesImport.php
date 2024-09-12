@@ -1,10 +1,10 @@
 <?php
-	
+
 	namespace App\Imports;
-	
+
 	use App\Models\PortCharge;
 	use Maatwebsite\Excel\Concerns\ToModel;
-	
+
 	class PortChargesImport implements ToModel
 	{
 		/**
@@ -14,31 +14,30 @@
 		 */
 		public function model(array $row) {
 			return new PortCharge([
-				'product_type' => $row[0],
-				'service_type' => $row[1],
-				'origin_country' => $row[2],
-				'pol' => $row[3],
-				'via' => $row[4],
-				'pod' => $row[5],
-				'dest_country' => $row[6],
-				'carrier' => $row[7],
-				'supplier' => $row[8],
-				'supplier_charge_name' => $row[9],
-				'internal_charge_name' => $row[10],
-				'calculation_rule' => $row[11],
-				'cost' => $this->transformDecimal($row[12]),
-				'currency' => $row[13],
-				'goodstype' => $row[14],
-				'publish_date' => $this->transformDate($row[15]),
-				'effective_date' => $this->transformDate($row[16]),
-				'expire_date' => $this->transformDate($row[17]),
-				'sell_rate' => $this->transformDecimal($row[18]),
-				'internal_notes' => $row[19],
-				'external_notes' => $row[20],
-				'pricing_notes' => $row[21],
+                'product_type' => $row[0] ?? null,
+                'service_type' => $row[1] ?? null,
+                'origin_country' => $row[2] ?? null,
+                'pol' => $row[3] ?? null,
+                'pod' => $row[4] ?? null,
+                'dest_country' => $row[5] ?? null,
+                'carrier' => $row[6] ?? null,
+                'supplier_charge_name' => $row[7] ?? null,
+                'calculation_rule' => $row[8] ?? null,
+                'cost' => $this->transformDecimal($row[9]),
+                'currency' => $row[10] ?? null,
+                'goodstype' => $row[11] ?? null,
+                'effective_date' => $this->transformDate($row[12]),
+                'expire_date' => $this->transformDate($row[13]),
+                'sell_rate' => $row[14] ?? null,
+                'internal_notes' => $row[15] ?? null,
+                'external_notes' => $row[16] ?? null,
+                'min_weight' => $row[17] ?? null,
+                'max_weight' => $row[18] ?? null,
+                'min_size' => $this->transformDecimal($row[19]) ?? null,
+                'max_size' => $this->transformDecimal($row[20]) ?? null,
 			]);
 		}
-		
+
 		public function transformDate($value, $format = 'Y-m-d') {
 			try {
 				return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format($format);
@@ -46,7 +45,7 @@
 				return null;
 			}
 		}
-		
+
 		public function transformDecimal($value) {
 			$value = str_replace(',', '.', $value);
 			return is_numeric($value) ? (float) $value : null;

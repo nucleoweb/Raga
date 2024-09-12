@@ -14,6 +14,10 @@ Route::get('/uploads', Uploads::class)
 	->middleware(['auth'])
 	->name('uploads');
 
+Route::get('/configs', App\Livewire\Config\ConfigIndex::class)
+    ->middleware(['auth'])
+    ->name('configs');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
