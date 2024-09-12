@@ -18,6 +18,14 @@ Route::get('/configs', App\Livewire\Config\ConfigIndex::class)
     ->middleware(['auth'])
     ->name('configs');
 
+Route::get('/land-charges', \App\Livewire\Pages\LandCharges::class)
+    ->middleware(['auth'])
+    ->name('land-charges');
+
+Route::get('/port-charges', \App\Livewire\Pages\PortCharges::class)
+    ->middleware(['auth'])
+    ->name('port-charges');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
