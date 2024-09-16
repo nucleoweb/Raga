@@ -67,8 +67,15 @@
 				],
 			]);
 
-			Log::info('response saved', ['data' => $result->choices[0]->message->content]);
-			return $result->choices[0]->message->content;
+            $responseContent = $result->choices[0]->message->content;
+            Log::info('response saved', ['data' => $responseContent]);
+
+            // Extract SQL query using regex
+            preg_match('/```sql(.*?)```/s', $responseContent, $matches);
+            $sqlQuery = isset($matches[1]) ? trim($matches[1]) : '';
+
+            return $sqlQuery;
+			//return $result->choices[0]->message->content;
 		}
 
 		public function processQueryData($body) {
