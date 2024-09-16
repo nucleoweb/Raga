@@ -48,7 +48,7 @@
 										       name="image"
 										       wire:model="csv"
 										       id="small-file-input" class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none file:border-0 file:bg-gray-100 file:me-4 file:py-2 file:px-4">
-										<button wire:click="uploadPortCharges" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Upload</button>
+										<a wire:click="uploadPortCharges" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded inline-block cursor-pointer">Upload</a>
 									</div>
 								</div>
 							</div>
@@ -72,31 +72,7 @@
 										       name="image"
 										       wire:model="csv"
 										       id="small-file-input" class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none file:border-0 file:bg-gray-100 file:me-4 file:py-2 file:px-4">
-										<button wire:click="uploadLandCharges" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Upload</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-10">
-				<div class="p-6 text-gray-900">
-					<div class="px-4 sm:px-6 lg:px-8">
-						<div class="sm:flex sm:items-center">
-							<div class="sm:flex-auto">
-								<h1 class="text-base font-semibold leading-6 text-gray-900">Upload Inland Merchant</h1>
-							</div>
-						</div>
-						<div class="mt-8 flow-root">
-							<div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-								<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-									<div class="col-span-full">
-										<input type="file"
-										       name="image"
-										       wire:model="csv"
-										       id="small-file-input" class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none file:border-0 file:bg-gray-100 file:me-4 file:py-2 file:px-4">
-										<button wire:click="uploadInlandMerchant" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Upload</button>
+										<a wire:click="uploadLandCharges" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded inline-block cursor-pointer">Upload</a>
 									</div>
 								</div>
 							</div>
@@ -120,7 +96,7 @@
 										       name="image"
 										       wire:model="csv"
 										       id="small-file-input" class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none file:border-0 file:bg-gray-100 file:me-4 file:py-2 file:px-4">
-										<button wire:click="uploadMargins" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">Upload</button>
+										<a wire:click="uploadMargins" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded inline-block cursor-pointer">Upload</a>
 									</div>
 								</div>
 							</div>
