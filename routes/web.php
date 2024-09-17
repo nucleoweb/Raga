@@ -34,4 +34,8 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
+Route::view('email-response', 'emails.response')
+    ->middleware(['auth'])
+    ->name('email-response');
+
 require __DIR__.'/auth.php';
