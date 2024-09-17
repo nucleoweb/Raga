@@ -89,20 +89,23 @@
 					[
 						'role' => 'user',
                         'content' => '
-                            A partir de los datos proporcionados en el array' . $query . ', formatea la respuesta para una cotización de transporte según el siguiente formato en HTML:
-                            En caso de haber articulos llena la tabla de articulos, en caso de no haber articulos no mostrar la tabla de articulos.
-                            Deduce desde '.$body.' los datos necesarios para completar la cotización. Los datos que no esten en el array deben ser reemplazados por "No espeficado" .
+                            A partir de los datos proporcionados en el array '.$query.', formatea la respuesta para una cotización de transporte según el siguiente formato en HTML. Además, deduce desde '.$body.', los datos necesarios para completar la cotización. Los datos que no estén en el array deben ser reemplazados por "No especificado".
                             Elimina las expresiones ```html y las notas creadas por ti, solo necesitamos el contenido HTML.
+
+                            Campos a Recuperar del Correo:
+                            - Dirección de entrega: es la ciudad final de destino como por ejemplo "heredia costa rica".
+                            - Puerto de destino: es el puerto donde llega la mercancía.
+                            - Naviera: es la empresa que se encarga de transportar la mercancía.
 
                             <div class="response-ai">
                                 <div style="margin-bottom: 50px;">
                                     <ul style="list-style-type: none; padding: 0px;">
                                         <li>Fecha de emisión: '.$today.' </li>
                                         <li>Fecha de vigencia: '.$dateExpire.'</li>
-                                        <li>Dirección de entrega (impor): [dirección de entrega]</li>
+                                        <li>Dirección de entrega (impor): [ciudad de destino]</li>
                                         <li>Puerto de origen: </li>
                                         <li>Puerto de destino: [puerto de destino]</li>
-                                        <li>Tipo de servicio: FCL 20" / FLC 40" STD / FLC 40" HC </li>
+                                        <li>Tipo de servicio: FCL</li>
                                         <li>Peso de la carga: [peso de la carga]</li>
                                         <li>Descripción de la mercancía: [descripción de la mercancía]</li>
                                         <li>Naviera: [naviera]</li>
