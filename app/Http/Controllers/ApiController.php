@@ -79,87 +79,23 @@
 		}
 
 		public function processQueryData($query, $body) {
-			Log::error('response before', ['data' => $query]);
+            $config = Config::first();
+            $prompt = $config ? $config->departure_prompt : '';
+
             $today = date('Y-m-d');
             $dateExpire = date('Y-m-d', strtotime($today . ' + 7 days'));
+
+            $prompt = str_replace('$body', $body, $prompt);
+            $prompt = str_replace('$query', $query, $prompt);
+            $prompt = str_replace('$today', $today, $prompt);
+            $prompt = str_replace('$dateExpire', $dateExpire, $prompt);
 
 			$result = OpenAI::chat()->create([
 				'model' => 'gpt-4o-mini',
 				'messages' => [
 					[
 						'role' => 'user',
-                        'content' => '
-                            A partir de los datos proporcionados en el array '.$query.', formatea la respuesta para una cotización de transporte según el siguiente formato en HTML. Además, deduce desde '.$body.', los datos necesarios para completar la cotización. Los datos que no estén en el array deben ser reemplazados por "No especificado".
-                            Elimina las expresiones ```html y las notas creadas por ti, solo necesitamos el contenido HTML.
-
-                            Campos a Recuperar del Correo:
-                            - Dirección de entrega: es la ciudad final de destino como por ejemplo "heredia costa rica".
-                            - Puerto de destino: es el puerto donde llega la mercancía.
-                            - Naviera: es la empresa que se encarga de transportar la mercancía.
-
-                            <div class="response-ai">
-                                <div style="margin-bottom: 50px;">
-                                    <ul style="list-style-type: none; padding: 0px;">
-                                        <li>Fecha de emisión: '.$today.' </li>
-                                        <li>Fecha de vigencia: '.$dateExpire.'</li>
-                                        <li>Dirección de entrega (impor): [ciudad de destino]</li>
-                                        <li>Puerto de origen: </li>
-                                        <li>Puerto de destino: [puerto de destino]</li>
-                                        <li>Tipo de servicio: FCL</li>
-                                        <li>Peso de la carga: [peso de la carga]</li>
-                                        <li>Descripción de la mercancía: [descripción de la mercancía]</li>
-                                        <li>Naviera: [naviera]</li>
-                                    </ul>
-                                </div>
-
-                                <div style="margin-bottom: 50px;">
-                                    <!-- Tabla de tarifas -->
-                                    <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
-                                        <thead>
-                                            <tr style="background-color: #f2f2f2;">
-                                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd;">Descripción</th>
-                                                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #ddd;">Cantidad</th>
-                                                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #ddd;">Tarifa</th>
-                                                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #ddd;">Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Repite esta estructura para cada ítem -->
-                                            <tr>
-                                                <td style="padding: 10px; border-bottom: 1px solid #ddd;">[Descripción]</td>
-                                                <td style="padding: 10px; text-align: right; border-bottom: 1px solid #ddd;">[Cantidad]</td>
-                                                <td style="padding: 10px; text-align: right; border-bottom: 1px solid #ddd;">[Tarifa]</td>
-                                                <td style="padding: 10px; text-align: right; border-bottom: 1px solid #ddd;">[Total]</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!-- Fin de tabla de tarifas -->
-                                <!-- Tabla de articulo -->
-                                <div style="margin-bottom: 50px;">
-                                    <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
-                                        <thead>
-                                            <tr style="background-color: #f2f2f2;">
-                                                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #ddd;">Descripción de artículo</th>
-                                                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #ddd;">Cantidad</th>
-                                                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #ddd;">Tarifa</th>
-                                                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #ddd;">Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Repite esta estructura para cada ítem -->
-                                            <tr>
-                                                <td style="padding: 10px; border-bottom: 1px solid #ddd;">[Descripción de artículo]</td>
-                                                <td style="padding: 10px; text-align: right; border-bottom: 1px solid #ddd;">[Cantidad]</td>
-                                                <td style="padding: 10px; text-align: right; border-bottom: 1px solid #ddd;">[Tarifa]</td>
-                                                <td style="padding: 10px; text-align: right; border-bottom: 1px solid #ddd;">[Total]</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!-- Fin de tabla de totales -->
-                            </div>
-                        ',
+                        'content' => $prompt,
 					],
 				],
 			]);

@@ -41,9 +41,30 @@
 
                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div class="col-span-full">
-                        <label for="about" class="block text-sm font-medium leading-6 text-gray-900">Prompt</label>
+                        <label for="about" class="block text-sm font-medium leading-6 text-gray-900">Prompt Query</label>
                         <div class="mt-2">
                             <textarea id="about" wire:model="prompt" name="about" rows="20" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
+                        </div>
+                        <p class="mt-3 text-sm leading-6 text-gray-600">Prompt Usado por chatGPT</p>
+                    </div>
+                </div>
+
+                <div class="relative mt-10">
+                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center">
+                        <span class="bg-white px-2 text-gray-500">
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div class="col-span-full">
+                        <label for="about" class="block text-sm font-medium leading-6 text-gray-900">Prompt Respuesta</label>
+                        <div class="mt-2">
+                            <textarea id="about" wire:model="promptResponse" name="about" rows="20" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></textarea>
                         </div>
                         <p class="mt-3 text-sm leading-6 text-gray-600">Prompt Usado por chatGPT</p>
                     </div>
@@ -53,7 +74,7 @@
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
             <button type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
-            <a class="cursor-pointer rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" wire:click="save">Guardar</a>
+            <a class="cursor-pointer rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" wire:click="savePromtpResponse">Guardar</a>
         </div>
     </form>
 
