@@ -85,7 +85,7 @@
             $ciudadesDeOrigen = [
                 "Alajuela", "Cartago", "Ciudad de Guatemala", "Ciudad de Panama",
                 "Ciudad Hidalgo", "Coyol", "Heredia", "Managua", "San Jose",
-                "San Pedro Sula", "San Salvador"
+                "San Pedro Sula", "San Salvador", "Guatemala"
             ];
 
             $ciudadesDeDestino = [
