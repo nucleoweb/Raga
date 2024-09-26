@@ -26,13 +26,21 @@
                 $missingFields = $data->get('data')['campos_faltantes'];
                 $countMissingFields = is_array($missingFields) ? count($missingFields) : 0;
                 $dataForQuery = $data->get('data');
-                $ciudadDestino = $data->get('data')['unlocation_id'];
+                $ciudadDestino = $data->get('data')['unlocation_id'] ?? 'San Jose, Costa Rica';
+                $dataForQuery['unlocation_id'] = $ciudadDestino;
 
-                Log::info('Unlocation ID', ['ciudad' => $ciudadDestino]);
+                Log::info('Unlocation ID', ['ciudad' => $ciudadDestino, 'data for query' => $dataForQuery]);
 
-                if (!$this->validarCiudad($ciudadDestino)) {
-                    Mail::to($email)->send(new CityOutOfRange($ciudadDestino));
-                    return response()->json(['Ciudad fuera de rango' => $ciudadDestino], 201);
+                if ($type === 'FCL') {
+                    if (!$this->validarCiudadFcl($ciudadDestino)) {
+                        Mail::to($email)->send(new CityOutOfRange($ciudadDestino));
+                        return response()->json(['Ciudad fuera de rango' => $ciudadDestino], 201);
+                    }
+                } else {
+                    if (!$this->validarCiudadFtl($dataForQuery)) {
+                        Mail::to($email)->send(new CityOutOfRange($ciudadDestino));
+                        return response()->json(['Ciudad fuera de rango' => $ciudadDestino], 201);
+                    }
                 }
 
                 if ($countMissingFields > 0) {
@@ -53,8 +61,8 @@
             }
 		}
 
-        private function validarCiudad($ciudad) {
-            Log::info('validar ciudad', ['ciudad' => $ciudad]);
+        private function validarCiudadFcl($ciudad) {
+            Log::info('validar ciudad FCL', ['ciudad' => $ciudad]);
 
             $ciudadesPermitidas = [
                 "Alajuela", "Aserrí", "Brisas", "Cartago", "Coronado", "Coyol",
@@ -69,6 +77,34 @@
             } else {
                 return false;
             }
+        }
+
+        private function validarCiudadFtl($data) {
+            Log::info('validar ciudad FTL', ['data' => $data]);
+
+            $ciudadesDeOrigen = [
+                "Alajuela", "Cartago", "Ciudad de Guatemala", "Ciudad de Panama",
+                "Ciudad Hidalgo", "Coyol", "Heredia", "Managua", "San Jose",
+                "San Pedro Sula", "San Salvador"
+            ];
+
+            $ciudadesDeDestino = [
+                "Alajuela", "Cartago", "Ciudad de Guatemala", "Ciudad de Panama",
+                "Ciudad Hidalgo", "Coyol", "Heredia", "Managua", "San Jose",
+                "San Pedro Sula", "San Salvador", "Tegucigalpa"
+            ];
+
+            $ciudadOrigen = preg_replace('/, .*/', '', $data['ciudad_origen']);
+            $ciudadDestino = str_replace(", Costa Rica", "", $data['unlocation_id']);
+
+            $origenValido = in_array($ciudadOrigen, $ciudadesDeOrigen);
+            $destinoValido = in_array($ciudadDestino, $ciudadesDeDestino);
+
+            if (!$origenValido || !$destinoValido) {
+                return false;
+            }
+
+            return true;
         }
 
         private function handleFcl($data, $email) {
@@ -271,18 +307,18 @@
                                 COALESCE(
                                     (SELECT MIN(cost)
                                      FROM land_charges
-                                     WHERE port_cfs_airport_name = 'Ciudad de Guatemala' -- Ciudad de origen
-                                       AND unlocation_id = 'San José, Costa Rica' -- Ciudad de destino
-                                       AND product_type = 'FTL'), 0) AS costo_por_unidad, -- Costo por FTL unitario
+                                     WHERE port_cfs_airport_name = 'Ciudad de Guatemala'
+                                       AND unlocation_id = 'San José, Costa Rica'
+                                       AND product_type = 'FTL'), 0) AS costo_por_unidad,
 
                                 -- Cálculo del margen
                                 COALESCE(
                                     (SELECT MIN(cost)
                                      FROM land_charges
-                                     WHERE port_cfs_airport_name = 'Ciudad de Guatemala' -- Ciudad de origen
-                                       AND unlocation_id = 'San José, Costa Rica' -- Ciudad de destino
+                                     WHERE port_cfs_airport_name = 'Ciudad de Guatemala'
+                                       AND unlocation_id = 'San José, Costa Rica'
                                        AND product_type = 'FTL'), 0) *
-                                    (1 + (SELECT MAX(totalmargin) / 100
+                                    (1 + (SELECT MAX(total_margin) / 100
                                           FROM margins
                                           WHERE product_type = 'FTL')) AS costo_con_margen -- Costo total con margen aplicado
                             FROM
