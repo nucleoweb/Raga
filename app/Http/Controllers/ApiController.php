@@ -89,9 +89,18 @@
         }
 
         private function handleFtl($data, $email) {
-            Log::info('FTL json', ['data' => $data]);
             $query = $this->promptFtlQuery($data);
             $response = $this->processQuery($query);
+            Log::info('Process Query FCL', ['response' => $response]);
+
+            try {
+                $ftlProcess = $this->procesResults($query, $data);
+                $this->sendResponseEmail($email, $ftlProcess);
+
+            } catch (\Exception $e) {
+                Log::error('Error Proceso FTL', ['error' => $e->getMessage()]);
+                return response()->json(['message' => 'error saving data'], 500);
+            }
             return response()->json(['Response FTL query' => $query, "Response Process Query" => $response], 201);
         }
 
@@ -251,22 +260,31 @@
                     [
                         'role' => 'user',
                         'content' => "
-                            Transforma ".$body. " en un query SQL
+                            Transforma ".json_encode($body). " en un query SQL
                             El siguiente SQL calcula el costo total por contenedor para FTL basándose en la ciudad de origen, la ciudad de destino y la cantidad de contenedores. Este cálculo se realiza utilizando solo los cargos terrestres (land_charges) correspondientes.
                             Responde solo la query sql para poder ejecutarla en otra funcion
 
-                            -- Cotización para transporte FTL
+                            -- Cotización FTL (Full Truck Load)
                             SELECT
-                                CONCAT('Total Transporte (', '{ciudad_origen}', ' - ', '{ciudad_destino}', ')') AS descripcion,
-                                {cantidad_contenedores} AS cantidad,
-                                SUM(
-                                    COALESCE(
-                                        (SELECT MIN(cost)
-                                         FROM land_charges
-                                         WHERE port_cfs_airport_name = '{ciudad_origen}'
-                                           AND unlocation_id = '{ciudad_destino}'
-                                           AND product_type = 'FTL'), 0)
-                                ) AS tarifa_por_contenedor
+                                'Total Costo FTL' AS descripcion,
+                                1 AS cantidad, -- cantidad de FTL a cotizar (se puede cambiar según los datos)
+                                COALESCE(
+                                    (SELECT MIN(cost)
+                                     FROM land_charges
+                                     WHERE port_cfs_airport_name = 'Ciudad de Guatemala' -- Ciudad de origen
+                                       AND unlocation_id = 'San José, Costa Rica' -- Ciudad de destino
+                                       AND product_type = 'FTL'), 0) AS costo_por_unidad, -- Costo por FTL unitario
+
+                                -- Cálculo del margen
+                                COALESCE(
+                                    (SELECT MIN(cost)
+                                     FROM land_charges
+                                     WHERE port_cfs_airport_name = 'Ciudad de Guatemala' -- Ciudad de origen
+                                       AND unlocation_id = 'San José, Costa Rica' -- Ciudad de destino
+                                       AND product_type = 'FTL'), 0) *
+                                    (1 + (SELECT MAX(totalmargin) / 100
+                                          FROM margins
+                                          WHERE product_type = 'FTL')) AS costo_con_margen -- Costo total con margen aplicado
                             FROM
                                 (SELECT 1) AS dummy_table;
                         ",
