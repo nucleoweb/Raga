@@ -93,18 +93,14 @@
                 "Ciudad Hidalgo", "Coyol", "Heredia", "Managua", "San Jose",
                 "San Pedro Sula", "San Salvador", "Tegucigalpa"
             ];
-
+            
             $ciudadOrigen = preg_replace('/, .*/', '', $data['ciudad_origen']);
             $ciudadDestino = str_replace(", Costa Rica", "", $data['unlocation_id']);
 
             $origenValido = in_array($ciudadOrigen, $ciudadesDeOrigen);
             $destinoValido = in_array($ciudadDestino, $ciudadesDeDestino);
 
-            if (!$origenValido || !$destinoValido) {
-                return false;
-            }
-
-            return true;
+            return $origenValido && $destinoValido;
         }
 
         private function handleFcl($data, $email) {
