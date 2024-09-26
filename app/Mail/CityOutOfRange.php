@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class PriceNotFound extends Mailable
+class CityOutOfRange extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -29,7 +29,7 @@ class PriceNotFound extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Raga AI',
+            subject: 'Ciudad fuera de rango',
         );
     }
 
@@ -39,7 +39,7 @@ class PriceNotFound extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.price-not-found',
+            view: 'emails.city-out-of-range',
         );
     }
 
