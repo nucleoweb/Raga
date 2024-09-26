@@ -26,7 +26,7 @@
                 $missingFields = $data->get('data')['campos_faltantes'];
                 $countMissingFields = is_array($missingFields) ? count($missingFields) : 0;
                 $dataForQuery = $data->get('data');
-                $ciudadDestino = $data->get('data')['unlocation_id'] ?? 'San Jose, Costa Rica';
+                $ciudadDestino = $data->get('data')['unlocation_id'];
                 $dataForQuery['unlocation_id'] = $ciudadDestino;
 
                 Log::info('Unlocation ID', ['ciudad' => $ciudadDestino, 'data for query' => $dataForQuery]);
@@ -93,7 +93,7 @@
                 "Ciudad Hidalgo", "Coyol", "Heredia", "Managua", "San Jose",
                 "San Pedro Sula", "San Salvador", "Tegucigalpa"
             ];
-            
+
             $ciudadOrigen = preg_replace('/, .*/', '', $data['ciudad_origen']);
             $ciudadDestino = str_replace(", Costa Rica", "", $data['unlocation_id']);
 
