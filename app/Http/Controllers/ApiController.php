@@ -234,7 +234,6 @@
                         ",
                         ],
                     ],
-                    'timeout' => 60,
                 ]);
 
                 $responseContent = $result->choices[0]->message->content;
@@ -273,7 +272,6 @@
                         ",
                     ],
                 ],
-                'timeout' => 60,
             ]);
 
             $responseContent = $result->choices[0]->message->content;
