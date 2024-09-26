@@ -30,14 +30,9 @@
                 $dataForQuery['unlocation_id'] = $ciudadDestino;
 
                 Log::info('Unlocation ID', ['ciudad' => $ciudadDestino, 'data for query' => $dataForQuery]);
-
+                
                 if ($type === 'FCL') {
                     if (!$this->validarCiudadFcl($ciudadDestino)) {
-                        Mail::to($email)->send(new CityOutOfRange($ciudadDestino));
-                        return response()->json(['Ciudad fuera de rango' => $ciudadDestino], 201);
-                    }
-                } else {
-                    if (!$this->validarCiudadFtl($dataForQuery)) {
                         Mail::to($email)->send(new CityOutOfRange($ciudadDestino));
                         return response()->json(['Ciudad fuera de rango' => $ciudadDestino], 201);
                     }
@@ -94,8 +89,9 @@
                 "San Pedro Sula", "San Salvador", "Tegucigalpa"
             ];
 
+            // Extraer solo la ciudad de origen
             $ciudadOrigen = preg_replace('/, .*/', '', $data['ciudad_origen']);
-            $ciudadDestino = str_replace(", Costa Rica", "", $data['unlocation_id']);
+            $ciudadDestino = preg_replace('/, .*/', '', $data['unlocation_id']);
 
             $origenValido = in_array($ciudadOrigen, $ciudadesDeOrigen);
             $destinoValido = in_array($ciudadDestino, $ciudadesDeDestino);
