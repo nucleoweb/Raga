@@ -114,6 +114,7 @@
 
             try {
                 $fclProcess = $this->procesResults($query, $data);
+                Log::info('FCL Process', ['response' => $fclProcess]);
                 $this->sendResponseEmail($email, $fclProcess);
 
             } catch (\Exception $e) {
@@ -131,6 +132,7 @@
 
             try {
                 $ftlProcess = $this->procesResults($query, $data);
+                Log::info('FTL Process', ['response' => $ftlProcess]);
                 $this->sendResponseEmail($email, $ftlProcess);
 
             } catch (\Exception $e) {
