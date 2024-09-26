@@ -234,6 +234,7 @@
                         ",
                         ],
                     ],
+                    'timeout' => 60,
                 ]);
 
                 $responseContent = $result->choices[0]->message->content;
@@ -247,7 +248,6 @@
         public function promptFtlQuery($body) {
             $result = OpenAI::chat()->create([
                 'model' => 'gpt-4o-mini',
-                'temperature' => 0.9,
                 'messages' => [
                     [
                         'role' => 'user',
@@ -273,6 +273,7 @@
                         ",
                     ],
                 ],
+                'timeout' => 60,
             ]);
 
             $responseContent = $result->choices[0]->message->content;
