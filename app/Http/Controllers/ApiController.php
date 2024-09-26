@@ -115,7 +115,8 @@
             try {
                 $fclProcess = $this->procesResults($query, $data);
                 Log::info('FCL Process', ['response' => $fclProcess]);
-                $this->sendResponseEmail($email, $fclProcess);
+                $cleanedFclProcess = strip_tags($fclProcess, '<table><tr><th><td>');
+                $this->sendResponseEmail($email, $cleanedFclProcess);
 
             } catch (\Exception $e) {
                 Log::error('Error Proceso FCL', ['error' => $e->getMessage()]);
@@ -133,7 +134,8 @@
             try {
                 $ftlProcess = $this->procesResults($query, $data);
                 Log::info('FTL Process', ['response' => $ftlProcess]);
-                $this->sendResponseEmail($email, $ftlProcess);
+                $cleanedFtlProcess = strip_tags($ftlProcess, '<table><tr><th><td>');
+                $this->sendResponseEmail($email, $cleanedFtlProcess);
 
             } catch (\Exception $e) {
                 Log::error('Error Proceso FTL', ['error' => $e->getMessage()]);
