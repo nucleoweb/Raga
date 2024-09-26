@@ -19,12 +19,10 @@
 
     <div style="padding: 20px;">
         <p>Estimado cliente</p>
-        <p> con la información proporcionada no se puede generar una cotización.</p>
+        <p>La ciudad de destino esta fuera de nuestro rango</p>
 
         <ul>
-            @foreach($data as $key => $item)
-                <li style="text-transform: capitalize;">{{ $item }}</li>
-            @endforeach
+            <li style="text-transform: capitalize;">{{ $data }}</li>
         </ul>
 
         <div>

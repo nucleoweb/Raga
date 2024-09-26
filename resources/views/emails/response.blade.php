@@ -26,7 +26,7 @@
 
             <div>
                 <p>Quedamos atentos a sus comentarios</p>
-                <p>Para consultas por favor comunicarse al (506) 7039-5587 con nadia correa</p>
+                <p>Para consultas por favor comunicarse al (506) 7039-5587 con Nadia Corea</p>
 
                 <ul style="margin-bottom: 50px">
                     <li>
