@@ -21,8 +21,7 @@
             <p>Estimado cliente</p>
             <p> A continuación, enviamos los detalles de la cotización solicitada: </p>
 
-
-            {!! $response !!}
+            {!! $response['response'] !!}
 
             <div>
                 <p>Quedamos atentos a sus comentarios</p>
