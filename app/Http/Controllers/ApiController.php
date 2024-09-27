@@ -7,7 +7,8 @@
 	use App\Mail\ResponseEmail;
     use App\Models\Config;
     use App\Models\Log as LogModel;
-	use Illuminate\Http\Request;
+    use Illuminate\Http\JsonResponse;
+    use Illuminate\Http\Request;
 	use Illuminate\Support\Facades\DB;
 	use Illuminate\Support\Facades\Log;
 	use Illuminate\Support\Facades\Mail;
@@ -30,7 +31,7 @@
                 $dataForQuery['unlocation_id'] = $ciudadDestino;
 
                 Log::info('Unlocation ID', ['ciudad' => $ciudadDestino, 'data for query' => $dataForQuery]);
-                
+
                 if ($type === 'FCL') {
                     if (!$this->validarCiudadFcl($ciudadDestino)) {
                         Mail::to($email)->send(new CityOutOfRange($ciudadDestino));
@@ -105,9 +106,8 @@
             Log::info('Process Query FCL', ['response' => $response]);
 
             try {
-                $fclProcess = $this->procesResults($query, $data);
-                Log::info('FCL Process', ['response' => $fclProcess]);
-                $cleanedFclProcess = strip_tags($fclProcess, '<table><tr><th><td>');
+                $collection = $this->transformResponseToCollection($response);
+                $cleanedFclProcess = $this->cleanFclData($collection);
                 $this->sendResponseEmail($email, $cleanedFclProcess);
 
             } catch (\Exception $e) {
@@ -121,12 +121,11 @@
         private function handleFtl($data, $email) {
             $query = $this->promptFtlQuery($data);
             $response = $this->processQuery($query);
-            Log::info('Process Query FCL', ['response' => $response]);
 
             try {
-                $ftlProcess = $this->procesResults($query, $data);
-                Log::info('FTL Process', ['response' => $ftlProcess]);
-                $cleanedFtlProcess = strip_tags($ftlProcess, '<table><tr><th><td>');
+                $collection = $this->transformResponseToCollection($response);
+                $cleanedFtlProcess = $this->cleanFclData($collection);
+                Log::info('Clean FTL', ['response' => $cleanedFtlProcess]);
                 $this->sendResponseEmail($email, $cleanedFtlProcess);
 
             } catch (\Exception $e) {
@@ -136,11 +135,44 @@
             return response()->json(['Response FTL query' => $query, "Response Process Query" => $response], 201);
         }
 
+        private function transformResponseToCollection(JsonResponse $response) {
+            $data = json_decode($response->getContent(), true);
+            return collect($data['data']);
+        }
+
+        private function cleanFclData(\Illuminate\Support\Collection $collection) {
+            Log::info('Table collection', ['response' => $collection]);
+            $table = '<table border="0" style="border-collapse: collapse; width: 100%;">';
+            $table .= '<thead style="background-color: #cccccc;"><tr><th>Descripción</th><th>Cantidad</th><th>Costo por Unidad</th><th>Costo Total</th></tr></thead>';
+            $table .= '<tbody>';
+
+            foreach ($collection as $item) {
+                // Decode the JSON string
+                $decodedItem = json_decode(reset($item), true);
+
+                $descripcion = isset($decodedItem['descripcion']) ? htmlspecialchars($decodedItem['descripcion']) : '';
+                $cantidad = isset($decodedItem['cantidad']) ? htmlspecialchars($decodedItem['cantidad']) : '';
+                $costoPorUnidad = isset($decodedItem['costo_por_unidad']) ? htmlspecialchars($decodedItem['costo_por_unidad']) : '';
+                $costoTotal = isset($decodedItem['costo_total']) ? htmlspecialchars($decodedItem['costo_total']) : '';
+
+                $table .= '<tr>';
+                $table .= '<td>' . $descripcion . '</td>';
+                $table .= '<td>' . $cantidad . '</td>';
+                $table .= '<td>' . $costoPorUnidad . '</td>';
+                $table .= '<td>' . $costoTotal . '</td>';
+                $table .= '</tr>';
+            }
+
+            $table .= '</tbody></table>';
+            return $table;
+        }
+
         private function sendPriceNotFoundEmail($email, $missingFields = []) {
             Mail::to($email)->send(new PriceNotFound($missingFields));
         }
 
         private function sendResponseEmail($email, $data) {
+            $data = ['response' => $data];
             Mail::to($email)->send(new ResponseEmail($data));
         }
 
@@ -191,87 +223,157 @@
                             El siguiente SQL calcula el costo por contenedor para FCL basándose en el puerto de destino, la naviera, la ciudad de destino y la cantidad de contenedores que se están cotizando. Este cálculo se realiza por tipo de contenedor, es decir, para contenedores de 40 pies o 20 pies, y separa las tarifas de cada uno.
                             Responde solo la query sql para poder ejecutarla en otra funcion
 
-                            -- Cotización para contenedores FCL
-                            SELECT
-                                CONCAT('Total Contenedores (', '40HQ', ')') AS descripcion,
-                                {cantidad_contenedores_40HQ} AS cantidad,
-                                SUM(
-                                    COALESCE(
-                                        (SELECT SUM(cost)
-                                         FROM port_charges
-                                         WHERE pod = '{pod}' -- Puerto dinámico
-                                           AND carrier = '{carrier}' -- Naviera dinámica
-                                           AND product_type = 'FCL'
-                                           AND supplier_charge_name LIKE '%IMPO%'), 0)
-                                    +
-                                    COALESCE(
-                                        (SELECT MIN(cost)
-                                         FROM land_charges
-                                         WHERE port_cfs_airport_name = '{pod}' -- Puerto dinámico
-                                           AND unlocation_id = '{unlocation_id}' -- Ciudad de destino dinámica
-                                           AND (allowed_carriers LIKE '%{carrier}%' OR allowed_carriers IS NULL)
-                                           AND product_type = 'FCL'
-                                           AND supplier_charge_name LIKE '%IMPO%'), 0)
-                                ) AS tarifa_por_contenedor,
-                                (SELECT MAX(handling_fee) * {cantidad_contenedores_40HQ}
-                                 FROM margins
-                                 WHERE product_type = 'FCL') AS handling_fee, -- Calcula el handling fee por cantidad de contenedores
-                                (SELECT MAX(documentation_fee)
-                                 FROM margins
-                                 WHERE product_type = 'FCL') AS documentation_fee -- Se aplica una sola vez por cotización
-                            FROM
-                                (SELECT 1) AS dummy_table;
+                            Los campos que estan en la query de ejemplo son los que debes usar, no agregues mas campos.
 
-                            -- Cotización para contenedores de 20 pies
-                            SELECT
-                                CONCAT('Total Contenedores (', '20FT', ')') AS descripcion,
-                                {cantidad_contenedores_20FT} AS cantidad,
-                                SUM(
-                                    COALESCE(
-                                        (SELECT SUM(cost)
-                                         FROM port_charges
-                                         WHERE pod = '{pod}' -- Puerto dinámico
-                                           AND carrier = '{carrier}' -- Naviera dinámica
-                                           AND product_type = 'FCL'
-                                           AND supplier_charge_name LIKE '%IMPO%'), 0)
-                                    +
-                                    COALESCE(
-                                        (SELECT MIN(cost)
-                                         FROM land_charges
-                                         WHERE port_cfs_airport_name = '{pod}' -- Puerto dinámico
-                                           AND unlocation_id = '{unlocation_id}' -- Ciudad de destino dinámica
-                                           AND (allowed_carriers LIKE '%{carrier}%' OR allowed_carriers IS NULL)
-                                           AND product_type = 'FCL'
-                                           AND supplier_charge_name LIKE '%IMPO%'), 0)
-                                ) AS tarifa_por_contenedor,
-                                (SELECT MAX(handling_fee) * {cantidad_contenedores_20FT}
-                                 FROM margins
-                                 WHERE product_type = 'FCL') AS handling_fee, -- Calcula el handling fee por cantidad de contenedores
-                                (SELECT MAX(documentation_fee)
-                                 FROM margins
-                                 WHERE product_type = 'FCL') AS documentation_fee -- Se aplica una sola vez por cotización
-                            FROM
-                                (SELECT 1) AS dummy_table;
+                            -- Cálculo de Port Charges para contenedores de 40HC
+                            SELECT JSON_OBJECT(
+                                'descripcion', 'Total Contenedores (40HC)',
+                                'cantidad', cantidad_contenedores_40HQ, -- Toma del JSON: cantidad_contenedores_40HQ
+                                'costo_por_unidad', COALESCE(
+                                    (SELECT SUM(cost)
+                                     FROM port_charges
+                                     WHERE pod LIKE CONCAT('%', pod, '%') -- Toma del JSON: pod
+                                       AND carrier LIKE CONCAT('%', carrier, '%') -- Toma del JSON: carrier
+                                       AND product_type = 'FCL'
+                                       AND supplier_charge_name LIKE '%IMPO%'), 0),
+                                'costo_total', COALESCE(
+                                    (SELECT SUM(cost)
+                                     FROM port_charges
+                                     WHERE pod LIKE CONCAT('%', pod, '%')
+                                       AND carrier LIKE CONCAT('%', carrier, '%')
+                                       AND product_type = 'FCL'
+                                       AND supplier_charge_name LIKE '%IMPO%'), 0) * cantidad_contenedores_40HQ
+                            )
 
-                            -- Cargos por transportista terrestre (land charges), diferenciando entre inland carrier e inland merchant
-                            SELECT
-                                'Land Charges (Inland Carrier)' AS descripcion,
+                            UNION ALL
+
+                            -- Cálculo de Port Charges para contenedores de 20FT
+                            SELECT JSON_OBJECT(
+                                'descripcion', 'Total Contenedores (20FT)',
+                                'cantidad', cantidad_contenedores_20FT, -- Toma del JSON: cantidad_contenedores_20FT
+                                'costo_por_unidad', COALESCE(
+                                    (SELECT SUM(cost)
+                                     FROM port_charges
+                                     WHERE pod LIKE CONCAT('%', pod, '%')
+                                       AND carrier LIKE CONCAT('%', carrier, '%')
+                                       AND product_type = 'FCL'
+                                       AND supplier_charge_name LIKE '%IMPO%'), 0),
+                                'costo_total', COALESCE(
+                                    (SELECT SUM(cost)
+                                     FROM port_charges
+                                     WHERE pod LIKE CONCAT('%', pod, '%')
+                                       AND carrier LIKE CONCAT('%', carrier, '%')
+                                       AND product_type = 'FCL'
+                                       AND supplier_charge_name LIKE '%IMPO%'), 0) * cantidad_contenedores_20FT
+                            )
+
+                            UNION ALL
+
+                            -- Cálculo de Land Charges para Inland Carrier
+                            SELECT JSON_OBJECT(
+                                'descripcion', 'Land Charges (Inland Carrier)',
+                                'cantidad', 1,
+                                'costo_por_unidad', COALESCE(
+                                    (SELECT MIN(cost)
+                                     FROM land_charges
+                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%') -- Toma del JSON: pod
+                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%') -- Toma del JSON: unlocation_id
+                                       AND allowed_carriers LIKE CONCAT('%', carrier, '%') -- Toma del JSON: carrier
+                                       AND product_type = 'FCL'
+                                       AND charge_type = 'Inland Carrier'), 0),
+                                'costo_total', COALESCE(
+                                    (SELECT MIN(cost)
+                                     FROM land_charges
+                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                       AND allowed_carriers LIKE CONCAT('%', carrier, '%')
+                                       AND product_type = 'FCL'
+                                       AND charge_type = 'Inland Carrier'), 0) * 1
+                            )
+
+                            UNION ALL
+
+                            -- Cálculo de Land Charges para Inland Merchant
+                            SELECT JSON_OBJECT(
+                                'descripcion', 'Land Charges (Inland Merchant)',
+                                'cantidad', 1,
+                                'costo_por_unidad', COALESCE(
+                                    (SELECT MIN(cost)
+                                     FROM land_charges
+                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                       AND allowed_carriers LIKE CONCAT('%', carrier, '%')
+                                       AND product_type = 'FCL'
+                                       AND charge_type = 'Inland Merchant'
+                                       AND trucker IS NULL), 0)
+                                +
                                 COALESCE(
                                     (SELECT MIN(cost)
                                      FROM land_charges
-                                     WHERE port_cfs_airport_name = '{pod}'
-                                       AND unlocation_id = '{unlocation_id}'
-                                       AND allowed_carriers LIKE '%{carrier}%'
-                                       AND product_type = 'FCL'), 0) AS inland_carrier_cost,
+                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                       AND product_type = 'FCL'
+                                       AND charge_type = 'Inland Merchant'
+                                       AND trucker LIKE '%Amacavi%'), 0),
+                                'costo_total', COALESCE(
+                                    (SELECT MIN(cost)
+                                     FROM land_charges
+                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                       AND allowed_carriers LIKE CONCAT('%', carrier, '%')
+                                       AND product_type = 'FCL'
+                                       AND charge_type = 'Inland Merchant'
+                                       AND trucker IS NULL), 0)
+                                +
                                 COALESCE(
                                     (SELECT MIN(cost)
                                      FROM land_charges
-                                     WHERE port_cfs_airport_name = '{pod}'
-                                       AND unlocation_id = '{unlocation_id}'
-                                       AND allowed_carriers IS NULL
-                                       AND product_type = 'FCL'), 0) AS inland_merchant_cost -- Si no hay carrier permitido
-                            FROM
-                                (SELECT 1) AS dummy_table;
+                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                       AND product_type = 'FCL'
+                                       AND charge_type = 'Inland Merchant'
+                                       AND trucker LIKE '%Amacavi%'), 0) * 1
+                            )
+
+                            UNION ALL
+
+                            -- Cálculo de Handling Fee según la cantidad de contenedores
+                            SELECT JSON_OBJECT(
+                                'descripcion', 'Handling Fee',
+                                'cantidad', cantidad_contenedores_40HQ + cantidad_contenedores_20FT, -- Suma de ambos tipos de contenedores
+                                'costo_por_unidad', COALESCE(
+                                    (SELECT MAX(handling_fee)
+                                     FROM margins
+                                     WHERE product_type = 'FCL'
+                                       AND internal_notes LIKE CASE
+                                           WHEN cantidad_contenedores_40HQ + cantidad_contenedores_20FT <= 5 THEN '%Hasta 5 contenedores%'
+                                           ELSE '%Desde 6 contenedores%'
+                                       END), 0),
+                                'costo_total', COALESCE(
+                                    (SELECT MAX(handling_fee)
+                                     FROM margins
+                                     WHERE product_type = 'FCL'
+                                       AND internal_notes LIKE CASE
+                                           WHEN cantidad_contenedores_40HQ + cantidad_contenedores_20FT <= 5 THEN '%Hasta 5 contenedores%'
+                                           ELSE '%Desde 6 contenedores%'
+                                       END), 0) * (cantidad_contenedores_40HQ + cantidad_contenedores_20FT)
+                            )
+
+                            UNION ALL
+
+                            -- Cálculo de Documentation Fee por cotización
+                            SELECT JSON_OBJECT(
+                                'descripcion', 'Documentation Fee',
+                                'cantidad', 1,
+                                'costo_por_unidad', COALESCE(
+                                    (SELECT MAX(documentation_fee)
+                                     FROM margins
+                                     WHERE product_type = 'FCL'), 0),
+                                'costo_total', COALESCE(
+                                    (SELECT MAX(documentation_fee)
+                                     FROM margins
+                                     WHERE product_type = 'FCL'), 0)
+                            );
                         ",
                         ],
                     ],
