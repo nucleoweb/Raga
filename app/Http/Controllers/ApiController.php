@@ -19,9 +19,11 @@
 			$req = $request->all();
 			$body = $req['data']['body'] ?? '';
 			$email = $req['data']['email'] ?? '';
+            Log::info('Request Email', ['email' => $req['data']]);
 
             try {
                 $response = $this->promptProces01($body);
+                Log::info('Prompt Process ', ['prompt' => $response]);
                 $data = collect($response);
                 $type = $data->get('data')['tipo_transporte'];
                 $missingFields = $data->get('data')['campos_faltantes'];
