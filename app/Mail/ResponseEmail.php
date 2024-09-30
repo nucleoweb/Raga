@@ -14,13 +14,15 @@ class ResponseEmail extends Mailable
     use Queueable, SerializesModels;
 
     public $response;
+    public $data;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($response)
+    public function __construct($response, $data)
     {
         $this->response = $response;
+        $this->data = $data;
     }
 
     /**

@@ -20,6 +20,15 @@
         <div style="padding: 20px;">
             <p>Estimado cliente</p>
             <p> A continuación, enviamos los detalles de la cotización solicitada: </p>
+            
+            <ul style="margin-bottom: 40px">
+                <li><strong>Destino: </strong> {{ $data['data']['unlocation_id'] ?? '' }}</li>
+                <li><strong>Carrier: </strong> {{ $data['data']['carrier'] ?? '' }}</li>
+                <li><strong>Tipo de transporte: </strong> {{ $data['data']['tipo_transporte'] ?? '' }}</li>
+                <li><strong>Contenedores 40HQ: </strong> {{ $data['data']['cantidad_contenedores_40HQ'] ?? '' }}</li>
+                <li><strong>Origen: </strong> {{ $data['data']['pod'] ?? '' }}</li>
+                <li><strong>Contenedores 20HQ: </strong> {{ $data['data']['cantidad_contenedores_20FT'] ?? '' }}</li>
+            </ul>
 
             {!! $response['response'] !!}
 

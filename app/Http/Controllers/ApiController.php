@@ -46,9 +46,9 @@
                     return response()->json(['Faltan los siguientes campos' => $missingFields], 201);
                 } else {
                     if ($type === 'FCL') {
-                        return $this->handleFcl($dataForQuery, $email);
+                        return $this->handleFcl($dataForQuery, $email, $data);
                     } else {
-                        return $this->handleFtl($dataForQuery, $email);
+                        return $this->handleFtl($dataForQuery, $email, $data);
                     }
                 }
 
@@ -102,7 +102,7 @@
             return $origenValido && $destinoValido;
         }
 
-        private function handleFcl($data, $email) {
+        private function handleFcl($data, $email, $arr) {
             $query = $this->promptFclQuery($data);
             $response = $this->processQuery($query);
             Log::info('Process Query FCL', ['response' => $response]);
@@ -110,7 +110,7 @@
             try {
                 $collection = $this->transformResponseToCollection($response);
                 $cleanedFclProcess = $this->cleanFclData($collection);
-                $this->sendResponseEmail($email, $cleanedFclProcess);
+                $this->sendResponseEmail($email, $cleanedFclProcess, $arr);
 
             } catch (\Exception $e) {
                 Log::error('Error Proceso FCL', ['error' => $e->getMessage()]);
@@ -173,9 +173,9 @@
             Mail::to($email)->send(new PriceNotFound($missingFields));
         }
 
-        private function sendResponseEmail($email, $data) {
+        private function sendResponseEmail($email, $data, $arr) {
             $data = ['response' => $data];
-            Mail::to($email)->send(new ResponseEmail($data));
+            Mail::to($email)->send(new ResponseEmail($data, $arr));
         }
 
         public function promptProces01($body) {
