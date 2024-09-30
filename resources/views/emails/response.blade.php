@@ -20,7 +20,7 @@
         <div style="padding: 20px;">
             <p>Estimado cliente</p>
             <p> A continuación, enviamos los detalles de la cotización solicitada: </p>
-            
+
             <ul style="margin-bottom: 40px">
                 <li><strong>Destino: </strong> {{ $data['data']['unlocation_id'] ?? '' }}</li>
                 <li><strong>Carrier: </strong> {{ $data['data']['carrier'] ?? '' }}</li>
