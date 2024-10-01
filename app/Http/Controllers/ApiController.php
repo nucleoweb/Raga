@@ -227,7 +227,8 @@
 
                             Los campos que estan en la query de ejemplo son los que debes usar, no agregues mas campos.
 
-                            -- Cálculo de Port Charges para contenedores de 40HC
+                            -- Cálculo completo de costos FCL incluyendo Port Charges, Land Charges, Handling Fee, y Documentation Fee
+                            -- Port Charges para contenedores de 40HC
                             SELECT JSON_OBJECT(
                                 'descripcion', 'Total Contenedores (40HC)',
                                 'cantidad', cantidad_contenedores_40HQ, -- Toma del JSON: cantidad_contenedores_40HQ
@@ -249,7 +250,7 @@
 
                             UNION ALL
 
-                            -- Cálculo de Port Charges para contenedores de 20FT
+                            -- Port Charges para contenedores de 20FT
                             SELECT JSON_OBJECT(
                                 'descripcion', 'Total Contenedores (20FT)',
                                 'cantidad', cantidad_contenedores_20FT, -- Toma del JSON: cantidad_contenedores_20FT
@@ -271,70 +272,96 @@
 
                             UNION ALL
 
-                            -- Cálculo de Land Charges para Inland Carrier
+                            -- Cálculo del menor costo entre Inland Carrier e Inland Merchant
                             SELECT JSON_OBJECT(
-                                'descripcion', 'Land Charges (Inland Carrier)',
+                                'descripcion', CASE
+                                    WHEN COALESCE(
+                                        (SELECT MIN(cost)
+                                         FROM land_charges
+                                         WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%') -- Toma del JSON: pod
+                                           AND unlocation_id LIKE CONCAT('%', unlocation_id, '%') -- Toma del JSON: unlocation_id
+                                           AND allowed_carriers LIKE CONCAT('%', carrier, '%') -- Toma del JSON: carrier
+                                           AND product_type = 'FCL'
+                                           AND charge_type = 'Inland Carrier'), 0)
+                                    <=
+                                    COALESCE(
+                                        (SELECT MIN(cost)
+                                         FROM land_charges
+                                         WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                           AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                           AND allowed_carriers LIKE CONCAT('%', carrier, '%')
+                                           AND product_type = 'FCL'
+                                           AND charge_type = 'Inland Merchant'
+                                           AND trucker IS NULL), 0)
+                                    +
+                                    COALESCE(
+                                        (SELECT MIN(cost)
+                                         FROM land_charges
+                                         WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                           AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                           AND product_type = 'FCL'
+                                           AND charge_type = 'Inland Merchant'
+                                           AND trucker LIKE '%Amacavi%'), 0)
+                                    THEN 'Land Charges (Inland Carrier)'
+                                    ELSE 'Land Charges (Inland Merchant)'
+                                END,
                                 'cantidad', 1,
-                                'costo_por_unidad', COALESCE(
-                                    (SELECT MIN(cost)
-                                     FROM land_charges
-                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%') -- Toma del JSON: pod
-                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%') -- Toma del JSON: unlocation_id
-                                       AND allowed_carriers LIKE CONCAT('%', carrier, '%') -- Toma del JSON: carrier
-                                       AND product_type = 'FCL'
-                                       AND charge_type = 'Inland Carrier'), 0),
-                                'costo_total', COALESCE(
-                                    (SELECT MIN(cost)
-                                     FROM land_charges
-                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
-                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
-                                       AND allowed_carriers LIKE CONCAT('%', carrier, '%')
-                                       AND product_type = 'FCL'
-                                       AND charge_type = 'Inland Carrier'), 0) * 1
-                            )
-
-                            UNION ALL
-
-                            -- Cálculo de Land Charges para Inland Merchant
-                            SELECT JSON_OBJECT(
-                                'descripcion', 'Land Charges (Inland Merchant)',
-                                'cantidad', 1,
-                                'costo_por_unidad', COALESCE(
-                                    (SELECT MIN(cost)
-                                     FROM land_charges
-                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
-                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
-                                       AND allowed_carriers LIKE CONCAT('%', carrier, '%')
-                                       AND product_type = 'FCL'
-                                       AND charge_type = 'Inland Merchant'
-                                       AND trucker IS NULL), 0)
-                                +
-                                COALESCE(
-                                    (SELECT MIN(cost)
-                                     FROM land_charges
-                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
-                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
-                                       AND product_type = 'FCL'
-                                       AND charge_type = 'Inland Merchant'
-                                       AND trucker LIKE '%Amacavi%'), 0),
-                                'costo_total', COALESCE(
-                                    (SELECT MIN(cost)
-                                     FROM land_charges
-                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
-                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
-                                       AND allowed_carriers LIKE CONCAT('%', carrier, '%')
-                                       AND product_type = 'FCL'
-                                       AND charge_type = 'Inland Merchant'
-                                       AND trucker IS NULL), 0)
-                                +
-                                COALESCE(
-                                    (SELECT MIN(cost)
-                                     FROM land_charges
-                                     WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
-                                       AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
-                                       AND product_type = 'FCL'
-                                       AND charge_type = 'Inland Merchant'
-                                       AND trucker LIKE '%Amacavi%'), 0) * 1
+                                'costo_por_unidad', LEAST(
+                                    COALESCE(
+                                        (SELECT MIN(cost)
+                                         FROM land_charges
+                                         WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                           AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                           AND allowed_carriers LIKE CONCAT('%', carrier, '%')
+                                           AND product_type = 'FCL'
+                                           AND charge_type = 'Inland Carrier'), 0),
+                                    COALESCE(
+                                        (SELECT MIN(cost)
+                                         FROM land_charges
+                                         WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                           AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                           AND allowed_carriers LIKE CONCAT('%', carrier, '%')
+                                           AND product_type = 'FCL'
+                                           AND charge_type = 'Inland Merchant'
+                                           AND trucker IS NULL), 0)
+                                    +
+                                    COALESCE(
+                                        (SELECT MIN(cost)
+                                         FROM land_charges
+                                         WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                           AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                           AND product_type = 'FCL'
+                                           AND charge_type = 'Inland Merchant'
+                                           AND trucker LIKE '%Amacavi%'), 0)
+                                ),
+                                'costo_total', LEAST(
+                                    COALESCE(
+                                        (SELECT MIN(cost)
+                                         FROM land_charges
+                                         WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                           AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                           AND allowed_carriers LIKE CONCAT('%', carrier, '%')
+                                           AND product_type = 'FCL'
+                                           AND charge_type = 'Inland Carrier'), 0),
+                                    COALESCE(
+                                        (SELECT MIN(cost)
+                                         FROM land_charges
+                                         WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                           AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                           AND allowed_carriers LIKE CONCAT('%', carrier, '%')
+                                           AND product_type = 'FCL'
+                                           AND charge_type = 'Inland Merchant'
+                                           AND trucker IS NULL), 0)
+                                    +
+                                    COALESCE(
+                                        (SELECT MIN(cost)
+                                         FROM land_charges
+                                         WHERE port_cfs_airport_name LIKE CONCAT('%', pod, '%')
+                                           AND unlocation_id LIKE CONCAT('%', unlocation_id, '%')
+                                           AND product_type = 'FCL'
+                                           AND charge_type = 'Inland Merchant'
+                                           AND trucker LIKE '%Amacavi%'), 0)
+                                )
                             )
 
                             UNION ALL
