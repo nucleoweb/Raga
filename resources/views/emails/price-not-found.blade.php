@@ -19,7 +19,8 @@
 
     <div style="padding: 20px;">
         <p>Estimado cliente,</p>
-        <p>Soy Raga X, tu asistente de inteligencia artificial para cotizaciones. Me encantaría poder ayudarte con la solicitud que nos has enviado. Sin embargo, he notado que faltan algunos datos importantes para generar la cotización completa:</p>
+        <p>Soy Raga X, tu asistente de inteligencia artificial en Grupo Linc. He revisado la información que nos enviaste, pero lamentablemente no fue suficiente para generar una cotización en este momento.</p>
+        <p>Si puedes compartir algunos detalles adicionales, estaré encantado de ayudarte y procesar tu solicitud cuanto antes.</p>
 
         <ul>
             @if(!$data)
