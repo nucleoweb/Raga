@@ -32,11 +32,6 @@
                 $ciudadDestino = $data->get('data')['unlocation_id'];
                 $dataForQuery['unlocation_id'] = $ciudadDestino;
 
-                if($countMissingFields > 0) {
-                    $this->sendPriceNotFoundEmail($email, ['Ciudad de destino']);
-                    return response()->json(['Faltan los siguientes campos' => 'Ciudad de destino'], 201);
-                }
-
                 Log::info('Unlocation ID', ['ciudad' => $ciudadDestino, 'data for query' => $dataForQuery]);
 
                 if ($type === 'FCL') {
