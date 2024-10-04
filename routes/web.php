@@ -26,9 +26,17 @@ Route::get('/port-charges', \App\Livewire\Pages\PortCharges::class)
     ->middleware(['auth'])
     ->name('port-charges');
 
-Route::view('dashboard', 'dashboard')
+Route::get('/dashboard', \App\Livewire\Pages\MarginsIndex::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+Route::get('/users', \App\Livewire\Pages\UsersIndex::class)
+    ->middleware(['auth', 'verified'])
+    ->name('users');
+
+Route::get('/users/register', \App\Livewire\Pages\UserCreate::class)
+    ->middleware(['auth', 'verified'])
+    ->name('users.create');
 
 Route::view('profile', 'profile')
     ->middleware(['auth'])

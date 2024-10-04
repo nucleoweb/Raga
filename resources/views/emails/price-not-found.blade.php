@@ -18,13 +18,17 @@
     </div>
 
     <div style="padding: 20px;">
-        <p>Estimado cliente</p>
-        <p> con la información proporcionada no se puede generar una cotización.</p>
+        <p>Estimado cliente,</p>
+        <p>Soy Raga X, tu asistente de inteligencia artificial para cotizaciones. Me encantaría poder ayudarte con la solicitud que nos has enviado. Sin embargo, he notado que faltan algunos datos importantes para generar la cotización completa:</p>
 
         <ul>
-            @foreach($data as $key => $item)
-                <li style="text-transform: capitalize;">{{ $item }}</li>
-            @endforeach
+            @if(!$data)
+                <li style="text-transform: capitalize;">Ciudad de destino</li>
+            @else
+                @foreach($data as $key => $item)
+                    <li style="text-transform: capitalize;">{{ $item }}</li>
+                @endforeach
+            @endif
         </ul>
 
         <div>
@@ -37,7 +41,9 @@
             <br>
             <br>
 
-            <p style="text-align: center"><strong>POWERED WITH AI BY RAGA-X</strong></p>
+            <p style="text-align: center">
+                <img src="https://i.imgur.com/wSgtqz9.jpeg" alt="">
+            </p>
         </div>
     </div>
 </div>

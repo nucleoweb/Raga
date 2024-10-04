@@ -19,7 +19,7 @@
 
     <div style="padding: 20px;">
         <p>Estimado cliente</p>
-        <p>La ciudad de destino esta fuera de nuestro rango</p>
+        <p>Soy Raga X, tu asistente de inteligencia artificial para cotizaciones. Me encantaría poder ayudarte con la solicitud que nos has enviado. Sin embargo, he notado que faltan algunos datos importantes para generar la cotización completa:</p>
 
         <ul>
             <li style="text-transform: capitalize;">{{ $data }}</li>
@@ -35,7 +35,10 @@
             <br>
             <br>
 
-            <p style="text-align: center"><strong>POWERED WITH AI BY RAGA-X</strong></p>
+            <p style="text-align: center">
+                <img src="https://i.imgur.com/wSgtqz9.jpeg" alt="">
+            </p>
+
         </div>
     </div>
 </div>
