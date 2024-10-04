@@ -8,6 +8,20 @@
         html, body {margin: 0;padding: 0;}
         p {font-size: 18px;}
         ul li {margin-bottom: 10px;}
+        table {
+            width: 100%;
+            border: 1px solid #E0E5FF;
+            background-color: white;
+            color: #2E2E2E;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #F2F4F8;
+        }
     </style>
 </head>
 
@@ -18,8 +32,8 @@
         </div>
 
         <div style="padding: 20px;">
-            <p>Estimado cliente</p>
-            <p> A continuación, enviamos los detalles de la cotización solicitada: </p>
+            <p>Estimado cliente,</p>
+            <p>A continuación, enviamos los detalles de la cotización solicitada: </p>
 
             <ul style="margin-bottom: 40px">
                 <li><strong>Destino: </strong> {{ $data['data']['unlocation_id'] ?? '' }}</li>
@@ -65,7 +79,9 @@
                 <br>
                 <br>
 
-                <p style="text-align: center"><strong>POWERED WITH AI BY RAGA-X</strong></p>
+                <p style="text-align: center">
+                    <img src="https://i.imgur.com/wSgtqz9.jpeg" alt="">
+                </p>
             </div>
         </div>
     </div>

@@ -23,11 +23,6 @@
                     class="h-[40px] border-[2px] rounded-[56px] border-[#3C5BFF] flex justify-center items-center w-[150px] lg:w-[180px] text-[16px] text-[#3C5BFF] font-bold hover:bg-[#3C5BFF] hover:text-white transition-all">
                     Iniciar Sesión
                 </a>
-
-                <a href="{{ route("register") }}"
-                    class="h-[40px] border-[2px] rounded-[56px] border-[#3C5BFF] flex justify-center items-center w-[150px] lg:w-[180px] text-[16px]  font-bold bg-[#3C5BFF] text-white hover:bg-white hover:text-[#3C5BFF] transition-all">
-                    Registro
-                </a>
             </div>
         </div>
     </header>

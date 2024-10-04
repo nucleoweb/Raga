@@ -1,67 +1,226 @@
-<div>
-    <div class="px-4 sm:px-6 lg:px-8">
-        <div class="sm:flex sm:items-center">
-            <div class="sm:flex-auto">
-                <h1 class="text-xl font-semibold leading-6 text-gray-900">Port Charges</h1>
+<div class="page-wrapper" x-data="{ showModal: false }">
+    <div>
+        <h1>Port charges</h1>
+
+        <div class="mb-[35px] flex gap-10">
+            <div>
+                <input type="text" placeholder="Search" class="search-input">
+            </div>
+
+            <div class="flex gap-5">
+                <span class="label">
+                    Etiqueta
+
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M17 7L7 17M7 7L17 17" stroke="#7288FF" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </span>
+
+                    <span class="label">
+                    Etiqueta
+
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M17 7L7 17M7 7L17 17" stroke="#7288FF" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </span>
+
+                <button @click="showModal = true" class="bg-indigo-600 text-white px-4 py-2 rounded h-[42px]">
+                    Crear Port Charge
+                </button>
             </div>
         </div>
-        <div class="mt-8 flow-root">
+
+        <h3 class="text-[18px] text-[#190FDB] font-bold pb-[11px] mb-[40px] border-b-[2px] inline-block  border-[#190FDB] relative ">Port charges</h3>
+
+        <div class="flow-root">
             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                     <table class="min-w-full table-fixed divide-y divide-gray-300 border-2 border-[#E0E5FF]">
                         <thead class="bg-[#F2F4F8]">
                             <tr class="px-5">
-                                <th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Product Type</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Service Type</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Origin Country</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">POL</th>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Product Type</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 w-[18%]">Service Type</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">POD</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Dest Country</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Carrier</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Supplier Charge Name</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Calculation Rule</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Cost</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Currency</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Goods Type</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Effective Date</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Expire Date</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Sell Rate</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Internal Notes</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">External Notes</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Min Weight</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Max Weight</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Min Size</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Max Size</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             @foreach($portCharges as $portCharge)
                                 <tr>
-                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">{{ $portCharge->product_type }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->service_type }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->origin_country }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->pol }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->pod }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->dest_country }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->carrier }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->supplier_charge_name }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->calculation_rule }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->cost }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->currency }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->goodstype }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->effective_date }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->expire_date }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->sell_rate }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->internal_notes }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->external_notes }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->min_weight }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->max_weight }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->min_size }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $portCharge->max_size }}</td>
+                                    <td class="py-4 pl-4 pr-3 text-sm font-medium text-gray-900">{{ $portCharge->product_type }}</td>
+                                    <td class="px-3 py-4 text-sm text-gray-500">{{ $portCharge->service_type }}</td>
+                                    <td class="px-3 py-4 text-sm text-gray-500">{{ $portCharge->pod }}</td>
+                                    <td class="px-3 py-4 text-sm text-gray-500">{{ $portCharge->carrier }}</td>
+                                    <td class="px-3 py-4 text-sm text-gray-500">{{ $portCharge->supplier_charge_name }}</td>
+                                    <td class="px-3 py-4 text-sm text-gray-500">{{ $portCharge->calculation_rule }}</td>
+                                    <td class="px-3 py-4 text-sm text-gray-500">{{ $portCharge->cost }}</td>
+                                    <td class="px-3 py-4 text-sm text-gray-500">{{ $portCharge->effective_date }}</td>
+                                    <td class="px-3 py-4 text-sm text-gray-500">{{ $portCharge->expire_date }}</td>
+                                    <td class="px-3 py-4 text-sm text-gray-500">{{ $portCharge->external_notes }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div x-show="showModal" class="relative z-[9999]" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showModal = false" aria-hidden="true"></div>
+
+        <!-- Contenido del modal -->
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <!-- Panel del modal -->
+                <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-[800px] sm:p-6"  @click.away="showModal = false">
+                    <div>
+                        <form wire:submit="save">
+                            <div class="grid grid-cols-3 gap-5 items-center mb-5">
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">Tipo de producto</label>
+                                    <select id="product_type" wire:model="product_type" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 pl-3 pr-10 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                        <option>Selecciona un tipo</option>
+                                        <option value="FCL">FCL</option>
+                                    </select>
+                                    <x-input-error :messages="$errors->get('product_type')" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <label for="service_type" class="block text-sm font-medium text-gray-700">Tipo de servicio</label>
+                                    <select id="service_type" wire:model="service_type"  class="mt-2 block w-full rounded-md border-gray-300 py-1.5 pl-3 pr-10 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                        <option>Selecciona un tipo</option>
+                                        <option value="IMPO">IMPO</option>
+                                        <option value="EXPO">EXPO</option>
+                                    </select>
+                                    <x-input-error :messages="$errors->get('service_type')" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <label for="city_origin" class="block text-sm font-medium text-gray-700">Ciudad origen</label>
+                                    <input type="text" id="city_origin" wire:model="origin_country"  class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                    <x-input-error :messages="$errors->get('origin_country')" class="mt-2" />
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-5 items-center mb-5">
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">POL</label>
+                                    <input type="text" id="city_origin" wire:model="pol" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">POD</label>
+                                    <input type="text" id="city_origin" wire:model="pod" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+
+                                <div>
+                                    <label for="city_origin" class="block text-sm font-medium text-gray-700">Ciudad de destino</label>
+                                    <input type="text" id="city_origin" wire:model="dest_country" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-5 items-center mb-5">
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">Carrier</label>
+                                    <input type="text" id="city_origin" wire:model="carrier" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">Nombre carga proveedor</label>
+                                    <input type="text" id="city_origin" wire:model="supplier_charge_name" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                    <x-input-error :messages="$errors->get('supplier_charge_name')" class="mt-2" />
+                                </div>
+
+                                <div>
+                                    <label for="city_origin" class="block text-sm font-medium text-gray-700">Costos</label>
+                                    <input type="number" id="city_origin" wire:model="cost" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-5 items-center mb-5">
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">Moneda</label>
+                                    <input type="text" id="city_origin" wire:model="currency" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">tipo de mercancía</label>
+                                    <input type="text" id="city_origin" wire:model="goodstype" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-5 items-center mb-5">
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">Fecha de creación</label>
+                                    <input type="date" id="city_origin" wire:model="effective_date" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+
+                                <div>
+                                    <label for="city_origin" class="block text-sm font-medium text-gray-700">Fecha de vencimiento</label>
+                                    <input type="date" id="city_origin" wire:model="expire_date" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-5 items-center mb-5">
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">Tasa de venta</label>
+                                    <input type="number" id="city_origin" wire:model="sell_rate" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">Notas internas</label>
+                                    <input type="text" id="city_origin" wire:model="internal_notes" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+
+                                <div>
+                                    <label for="city_origin" class="block text-sm font-medium text-gray-700">Notas extrernas</label>
+                                    <input type="text" id="city_origin" wire:model="external_notes" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-5 items-center mb-5">
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">Peso minimo</label>
+                                    <input type="text" id="city_origin" wire:model="min_weight" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+
+                                <div>
+                                    <label for="city_origin" class="block text-sm font-medium text-gray-700">Peso Maximo</label>
+                                    <input type="text" id="city_origin" wire:model="max_weight" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-5 items-center mb-5">
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">Tamaño minimo</label>
+                                    <input type="number" id="city_origin" wire:model="min_size" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+
+                                <div>
+                                    <label for="product_type" class="block text-sm font-medium text-gray-700">tamaño maximo</label>
+                                    <input type="text" id="city_origin" wire:model="max_size" class="mt-2 block w-full rounded-md border-gray-300 py-1.5 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-sm sm:leading-6">
+                                </div>
+                            </div>
+
+                            <!-- Botón de envío -->
+                            <div class="flex items-center justify-end mt-4">
+                                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded">
+                                    Crear
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
