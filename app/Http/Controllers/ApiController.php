@@ -34,13 +34,6 @@
 
                 Log::info('Unlocation ID', ['ciudad' => $ciudadDestino, 'data for query' => $dataForQuery]);
 
-                if ($type === 'FCL') {
-                    if (!$this->validarCiudadFcl($ciudadDestino)) {
-                        Mail::to($email)->send(new CityOutOfRange($ciudadDestino));
-                        return response()->json(['Ciudad fuera de rango' => $ciudadDestino], 201);
-                    }
-                }
-
                 if ($countMissingFields > 0) {
                     $this->sendPriceNotFoundEmail($email, $missingFields);
                     return response()->json(['Faltan los siguientes campos' => $missingFields], 201);
@@ -181,15 +174,18 @@
         public function promptProces01($body) {
             $config = Config::first();
             $prompt = $config ? $config->prompt : '';
-            $prompt = str_replace('$body', $body, $prompt);
 
             $result = OpenAI::chat()->create([
                 'model' => 'gpt-4o-mini',
                 'temperature' => 0.8,
                 'messages' => [
                     [
-                        'role' => 'user',
+                        'role' => 'system',
                         'content' => $prompt,
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $body,
                     ],
                 ],
             ]);
@@ -197,18 +193,10 @@
             $responseContent = $result->choices[0]->message->content;
             Log::info('Response raw 01', [$responseContent]);
 
-            // Extract JSON content using regex
-            preg_match('/```json(.*?)```/s', $responseContent, $matches);
-            $jsonContent = isset($matches[1]) ? trim($matches[1]) : '';
+            $responseContent = stripslashes($responseContent);
+            $responseArray = json_decode($responseContent, true);
 
-            // Ensure $jsonContent is a string before decoding
-            if (is_string($jsonContent) && !empty($jsonContent)) {
-                $responseData = json_decode($jsonContent, true);
-            } else {
-                $responseData = null;
-            }
-
-            return $responseData;
+            return $responseArray;
         }
 
         public function promptFclQuery($body) {
@@ -550,31 +538,6 @@
             $responseContent = $result->choices[0]->message->content;
             return $responseContent;
         }
-
-		public function processInformationByAi($body) {
-            $config = Config::first();
-            $prompt = $config ? $config->prompt : '';
-            $prompt = str_replace('$body', $body, $prompt);
-
-			$result = OpenAI::chat()->create([
-				'model' => 'gpt-4o-mini',
-				'messages' => [
-					[
-						'role' => 'user',
-						'content' => $prompt,
-					],
-				],
-			]);
-
-            $responseContent = $result->choices[0]->message->content;
-
-            // Extract SQL query using regex
-            //preg_match('/```sql(.*?)```/s', $responseContent, $matches);
-            //$sqlQuery = isset($matches[1]) ? trim($matches[1]) : '';
-
-            return $responseContent;
-			//return $result->choices[0]->message->content;
-		}
 
 		public function procesResults($query, $body) {
             $config = Config::first();
