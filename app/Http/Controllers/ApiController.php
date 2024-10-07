@@ -32,7 +32,13 @@
                 $ciudadDestino = $data->get('data')['unlocation_id'];
                 $dataForQuery['unlocation_id'] = $ciudadDestino;
 
-                Log::info('Unlocation ID', ['ciudad' => $ciudadDestino, 'data for query' => $dataForQuery]);
+                $data = LogModel::create([
+                    'message' => 'Email saved',
+                    'context' => json_encode($req),
+                    'response' => $response,
+                ]);
+
+                Log::info('Unlocation ID', ['ciudad' => $ciudadDestino, 'data for query' => $dataForQuery, "log model" => $data]);
 
                 if ($countMissingFields > 0) {
                     $this->sendPriceNotFoundEmail($email, $missingFields);
