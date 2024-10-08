@@ -35,7 +35,7 @@
                 $data = LogModel::create([
                     'message' => 'Email saved',
                     'context' => json_encode($req),
-                    'response' => $response,
+                    'response' => json_encode($response),
                 ]);
 
                 Log::info('Unlocation ID', ['ciudad' => $ciudadDestino, 'data for query' => $dataForQuery, "log model" => $data]);
