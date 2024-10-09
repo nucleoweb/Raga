@@ -119,7 +119,7 @@
             return response()->json(['Response FCL query' => $query, "Response Process Query" => $response], 201);
         }
 
-        private function handleFtl($data, $email) {
+        private function handleFtl($data, $email, $arr) {
             $query = $this->promptFtlQuery($data);
             $response = $this->processQuery($query);
 
@@ -127,7 +127,7 @@
                 $collection = $this->transformResponseToCollection($response);
                 $cleanedFtlProcess = $this->cleanFclData($collection);
                 Log::info('Clean FTL', ['response' => $cleanedFtlProcess]);
-                $this->sendResponseEmail($email, $cleanedFtlProcess);
+                $this->sendResponseEmail($email, $cleanedFtlProcess, $arr);
 
             } catch (\Exception $e) {
                 Log::error('Error Proceso FTL', ['error' => $e->getMessage()]);
@@ -245,8 +245,7 @@
 
                             -- Land Charges: seleccionar el costo más bajo entre Inland Carrier e Inland Merchant
                             SELECT JSON_OBJECT(
-                                'descripcion', 'Land Charges',
-                                'tipo',
+                                'descripcion',
                                     CASE
                                         WHEN
                                             (SELECT MIN(cost)
@@ -274,8 +273,8 @@
                                                    AND product_type = 'FCL'
                                                    AND charge_type = 'Inland Merchant'
                                                    AND trucker LIKE '%Amacavi%'), 0))
-                                        THEN 'Inland Carrier'
-                                        ELSE 'Inland Merchant'
+                                        THEN 'Land Charges (Inland Carrier)'
+                                        ELSE 'Land Charges (Inland Merchant)'
                                     END,
                                 'cantidad', @cantidad_contenedores_total,  -- Se aplica a todos los contenedores (Variable: cantidad total)
                                 'costo_por_unidad', LEAST(
