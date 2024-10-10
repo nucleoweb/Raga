@@ -445,28 +445,25 @@
                             Responde solo la query sql para poder ejecutarla en otra funcion
 
                             -- Cotización FTL (Full Truck Load)
-                            SELECT
-                                'Total Costo FTL' AS descripcion,
-                                1 AS cantidad, -- cantidad de FTL a cotizar (se puede cambiar según los datos)
-                                COALESCE(
+                            SELECT JSON_OBJECT(
+                                'descripcion', 'Total Costo FTL',
+                                'cantidad', @cantidad_ftl,  -- Variable: cantidad de FTL a cotizar
+                                'costo_por_unidad', COALESCE(
                                     (SELECT MIN(cost)
-                                     FROM land_charges
-                                     WHERE port_cfs_airport_name = 'Ciudad de Guatemala'
-                                       AND unlocation_id = 'San José, Costa Rica'
-                                       AND product_type = 'FTL'), 0) AS costo_por_unidad,
-
-                                -- Cálculo del margen
-                                COALESCE(
+                                    FROM land_charges
+                                    WHERE port_cfs_airport_name LIKE CONCAT('%', @origen, '%')  -- Variable: origen
+                                    AND unlocation_id LIKE CONCAT('%', @destino, '%')  -- Variable: destino
+                                    AND product_type = 'FTL'), 0),
+                                'costo_con_margen', COALESCE(
                                     (SELECT MIN(cost)
-                                     FROM land_charges
-                                     WHERE port_cfs_airport_name = 'Ciudad de Guatemala'
-                                       AND unlocation_id = 'San José, Costa Rica'
-                                       AND product_type = 'FTL'), 0) *
+                                    FROM land_charges
+                                    WHERE port_cfs_airport_name LIKE CONCAT('%', @origen, '%')
+                                    AND unlocation_id LIKE CONCAT('%', @destino, '%')
+                                    AND product_type = 'FTL'), 0) *
                                     (1 + (SELECT MAX(total_margin) / 100
-                                          FROM margins
-                                          WHERE product_type = 'FTL')) AS costo_con_margen -- Costo total con margen aplicado
-                            FROM
-                                (SELECT 1) AS dummy_table;
+                                        FROM margins
+                                        WHERE product_type = 'FTL'))
+                            ) AS cotizacion_ftl;
                         ",
                     ],
                 ],
