@@ -219,44 +219,45 @@
                             El siguiente SQL calcula el costo por contenedor para FCL basándose en el puerto de destino, la naviera, la ciudad de destino y la cantidad de contenedores que se están cotizando. Este cálculo se realiza por tipo de contenedor, es decir, para contenedores de 40 pies o 20 pies, y separa las tarifas de cada uno.
                             Responde solo la query sql para poder ejecutarla en otra funcion
 
+                            -- Cotización FCL (Full Container Load) desde el correo
                             SELECT JSON_OBJECT(
                                 'descripcion', 'Total Contenedores (40HC)',
-                                'cantidad', 3,
+                                'cantidad', @cantidad_contenedores_40HC,
                                 'costo_por_unidad', COALESCE(
                                     (SELECT SUM(cost)
                                     FROM port_charges
-                                    WHERE pod LIKE '%Caldera%'
-                                    AND carrier LIKE '%COSCO%'
+                                    WHERE pod LIKE CONCAT('%', @pod, '%')  -- Puerto desde el correo
+                                    AND carrier LIKE CONCAT('%', @carrier, '%')  -- Carrier desde el correo
                                     AND product_type = 'FCL'
                                     AND supplier_charge_name LIKE '%IMPO%'), 0),
                                 'costo_total', COALESCE(
                                     (SELECT SUM(cost)
                                     FROM port_charges
-                                    WHERE pod LIKE '%Caldera%'
-                                    AND carrier LIKE '%COSCO%'
+                                    WHERE pod LIKE CONCAT('%', @pod, '%')
+                                    AND carrier LIKE CONCAT('%', @carrier, '%')
                                     AND product_type = 'FCL'
-                                    AND supplier_charge_name LIKE '%IMPO%'), 0) * 3
+                                    AND supplier_charge_name LIKE '%IMPO%'), 0) * @cantidad_contenedores_40HC
                             ) AS port_charges_40HC
 
                             UNION ALL
 
                             SELECT JSON_OBJECT(
                                 'descripcion', 'Total Contenedores (20FT)',
-                                'cantidad', 1,
+                                'cantidad', @cantidad_contenedores_20FT,
                                 'costo_por_unidad', COALESCE(
                                     (SELECT SUM(cost)
                                     FROM port_charges
-                                    WHERE pod LIKE '%Caldera%'
-                                    AND carrier LIKE '%COSCO%'
+                                    WHERE pod LIKE CONCAT('%', @pod, '%')
+                                    AND carrier LIKE CONCAT('%', @carrier, '%')
                                     AND product_type = 'FCL'
                                     AND supplier_charge_name LIKE '%IMPO%'), 0),
                                 'costo_total', COALESCE(
                                     (SELECT SUM(cost)
                                     FROM port_charges
-                                    WHERE pod LIKE '%Caldera%'
-                                    AND carrier LIKE '%COSCO%'
+                                    WHERE pod LIKE CONCAT('%', @pod, '%')
+                                    AND carrier LIKE CONCAT('%', @carrier, '%')
                                     AND product_type = 'FCL'
-                                    AND supplier_charge_name LIKE '%IMPO%'), 0) * 1
+                                    AND supplier_charge_name LIKE '%IMPO%'), 0) * @cantidad_contenedores_20FT
                             ) AS port_charges_20FT
 
                             UNION ALL
@@ -265,42 +266,41 @@
                             SELECT JSON_OBJECT(
                                 'descripcion',
                                 CASE
-                                    WHEN
-                                        COALESCE(
+                                    WHEN COALESCE(
                                             (SELECT MIN(cost)
                                             FROM land_charges
-                                            WHERE port_cfs_airport_name LIKE '%Caldera%'
-                                            AND unlocation_id LIKE '%Alajuela%'
-                                            AND allowed_carriers LIKE '%COSCO%'
+                                            WHERE port_cfs_airport_name LIKE CONCAT('%', @pod, '%')
+                                            AND unlocation_id LIKE CONCAT('%', @unlocation_id, '%')
+                                            AND allowed_carriers LIKE CONCAT('%', @carrier, '%')
                                             AND product_type = 'FCL'
-                                            AND charge_type = 'Inland Carrier'), 0)
-                                        > 0 THEN 'Land Charges (Inland Carrier)'
+                                            AND charge_type = 'Inland Carrier'), 0) > 0
+                                    THEN 'Land Charges (Inland Carrier)'
                                     ELSE 'Land Charges (Inland Merchant)'
                                 END,
-                                'cantidad', 4,  -- Cantidad total de contenedores
+                                'cantidad', @cantidad_contenedores_total,  -- Cantidad total de contenedores
                                 'costo_por_unidad', LEAST(
                                     COALESCE(
                                         (SELECT MIN(cost)
                                         FROM land_charges
-                                        WHERE port_cfs_airport_name LIKE '%Caldera%'
-                                        AND unlocation_id LIKE '%Alajuela%'
-                                        AND allowed_carriers LIKE '%COSCO%'
+                                        WHERE port_cfs_airport_name LIKE CONCAT('%', @pod, '%')
+                                        AND unlocation_id LIKE CONCAT('%', @unlocation_id, '%')
+                                        AND allowed_carriers LIKE CONCAT('%', @carrier, '%')
                                         AND product_type = 'FCL'
                                         AND charge_type = 'Inland Carrier'), 0),
                                     COALESCE(
                                         (SELECT MIN(cost)
                                         FROM land_charges
-                                        WHERE port_cfs_airport_name LIKE '%Caldera%'
-                                        AND unlocation_id LIKE '%Alajuela%'
-                                        AND allowed_carriers LIKE '%COSCO%'
+                                        WHERE port_cfs_airport_name LIKE CONCAT('%', @pod, '%')
+                                        AND unlocation_id LIKE CONCAT('%', @unlocation_id, '%')
+                                        AND allowed_carriers LIKE CONCAT('%', @carrier, '%')
                                         AND product_type = 'FCL'
                                         AND charge_type = 'Inland Merchant'
                                         AND trucker IS NULL), 0)
                                     + COALESCE(
                                         (SELECT MIN(cost)
                                         FROM land_charges
-                                        WHERE port_cfs_airport_name LIKE '%Caldera%'
-                                        AND unlocation_id LIKE '%Alajuela%'
+                                        WHERE port_cfs_airport_name LIKE CONCAT('%', @pod, '%')
+                                        AND unlocation_id LIKE CONCAT('%', @unlocation_id, '%')
                                         AND product_type = 'FCL'
                                         AND charge_type = 'Inland Merchant'
                                         AND trucker LIKE '%Amacavi%'), 0)
@@ -309,29 +309,29 @@
                                     COALESCE(
                                         (SELECT MIN(cost)
                                         FROM land_charges
-                                        WHERE port_cfs_airport_name LIKE '%Caldera%'
-                                        AND unlocation_id LIKE '%Alajuela%'
-                                        AND allowed_carriers LIKE '%COSCO%'
+                                        WHERE port_cfs_airport_name LIKE CONCAT('%', @pod, '%')
+                                        AND unlocation_id LIKE CONCAT('%', @unlocation_id, '%')
+                                        AND allowed_carriers LIKE CONCAT('%', @carrier, '%')
                                         AND product_type = 'FCL'
                                         AND charge_type = 'Inland Carrier'), 0),
                                     COALESCE(
                                         (SELECT MIN(cost)
                                         FROM land_charges
-                                        WHERE port_cfs_airport_name LIKE '%Caldera%'
-                                        AND unlocation_id LIKE '%Alajuela%'
-                                        AND allowed_carriers LIKE '%COSCO%'
+                                        WHERE port_cfs_airport_name LIKE CONCAT('%', @pod, '%')
+                                        AND unlocation_id LIKE CONCAT('%', @unlocation_id, '%')
+                                        AND allowed_carriers LIKE CONCAT('%', @carrier, '%')
                                         AND product_type = 'FCL'
                                         AND charge_type = 'Inland Merchant'
                                         AND trucker IS NULL), 0)
                                     + COALESCE(
                                         (SELECT MIN(cost)
                                         FROM land_charges
-                                        WHERE port_cfs_airport_name LIKE '%Caldera%'
-                                        AND unlocation_id LIKE '%Alajuela%'
+                                        WHERE port_cfs_airport_name LIKE CONCAT('%', @pod, '%')
+                                        AND unlocation_id LIKE CONCAT('%', @unlocation_id, '%')
                                         AND product_type = 'FCL'
                                         AND charge_type = 'Inland Merchant'
                                         AND trucker LIKE '%Amacavi%'), 0)
-                                ) * 4
+                                ) * @cantidad_contenedores_total
                             ) AS land_charges
 
                             UNION ALL
@@ -339,17 +339,17 @@
                             -- Handling Fee
                             SELECT JSON_OBJECT(
                                 'descripcion', 'Handling Fee',
-                                'cantidad', 4,
+                                'cantidad', @cantidad_contenedores_total,
                                 'costo_por_unidad', COALESCE(
                                     (SELECT MAX(handling_fee)
                                     FROM margins
                                     WHERE product_type = 'FCL'
-                                    AND internal_notes LIKE CASE WHEN 4 <= 5 THEN '%Hasta 5 contenedores%' ELSE '%Desde 6 contenedores%' END), 0),
+                                    AND internal_notes LIKE CASE WHEN @cantidad_contenedores_total <= 5 THEN '%Hasta 5 contenedores%' ELSE '%Desde 6 contenedores%' END), 0),
                                 'costo_total', COALESCE(
                                     (SELECT MAX(handling_fee)
                                     FROM margins
                                     WHERE product_type = 'FCL'
-                                    AND internal_notes LIKE CASE WHEN 4 <= 5 THEN '%Hasta 5 contenedores%' ELSE '%Desde 6 contenedores%' END), 0) * 4
+                                    AND internal_notes LIKE CASE WHEN @cantidad_contenedores_total <= 5 THEN '%Hasta 5 contenedores%' ELSE '%Desde 6 contenedores%' END), 0) * @cantidad_contenedores_total
                             ) AS handling_fee
 
                             UNION ALL
@@ -378,44 +378,44 @@
                                 'costo_total',
                                     COALESCE((SELECT SUM(cost)
                                     FROM port_charges
-                                    WHERE pod LIKE '%Caldera%'
-                                    AND carrier LIKE '%COSCO%'
+                                    WHERE pod LIKE CONCAT('%', @pod, '%')
+                                    AND carrier LIKE CONCAT('%', @carrier, '%')
                                     AND product_type = 'FCL'
-                                    AND supplier_charge_name LIKE '%IMPO%'), 0) * 4
+                                    AND supplier_charge_name LIKE '%IMPO%'), 0) * @cantidad_contenedores_total
                                     +
                                     LEAST(
                                         COALESCE((SELECT MIN(cost)
                                         FROM land_charges
-                                        WHERE port_cfs_airport_name LIKE '%Caldera%'
-                                        AND unlocation_id LIKE '%Alajuela%'
-                                        AND allowed_carriers LIKE '%COSCO%'
+                                        WHERE port_cfs_airport_name LIKE CONCAT('%', @pod, '%')
+                                        AND unlocation_id LIKE CONCAT('%', @unlocation_id, '%')
+                                        AND allowed_carriers LIKE CONCAT('%', @carrier, '%')
                                         AND product_type = 'FCL'
                                         AND charge_type = 'Inland Carrier'), 0),
                                         COALESCE(
                                             (SELECT MIN(cost)
                                             FROM land_charges
-                                            WHERE port_cfs_airport_name LIKE '%Caldera%'
-                                            AND unlocation_id LIKE '%Alajuela%'
-                                            AND allowed_carriers LIKE '%COSCO%'
+                                            WHERE port_cfs_airport_name LIKE CONCAT('%', @pod, '%')
+                                            AND unlocation_id LIKE CONCAT('%', @unlocation_id, '%')
+                                            AND allowed_carriers LIKE CONCAT('%', @carrier, '%')
                                             AND product_type = 'FCL'
                                             AND charge_type = 'Inland Merchant'
                                             AND trucker IS NULL), 0)
                                         + COALESCE(
                                             (SELECT MIN(cost)
                                             FROM land_charges
-                                            WHERE port_cfs_airport_name LIKE '%Caldera%'
-                                            AND unlocation_id LIKE '%Alajuela%'
+                                            WHERE port_cfs_airport_name LIKE CONCAT('%', @pod, '%')
+                                            AND unlocation_id LIKE CONCAT('%', @unlocation_id, '%')
                                             AND product_type = 'FCL'
                                             AND charge_type = 'Inland Merchant'
                                             AND trucker LIKE '%Amacavi%'), 0)
-                                    ) * 4
+                                    ) * @cantidad_contenedores_total
                                     +
                                     COALESCE(
                                         (SELECT MAX(handling_fee)
                                         FROM margins
                                         WHERE product_type = 'FCL'
-                                        AND internal_notes LIKE CASE WHEN 4 <= 5 THEN '%Hasta 5 contenedores%' ELSE '%Desde 6 contenedores%' END), 0
-                                    ) * 4
+                                        AND internal_notes LIKE CASE WHEN @cantidad_contenedores_total <= 5 THEN '%Hasta 5 contenedores%' ELSE '%Desde 6 contenedores%' END), 0
+                                    ) * @cantidad_contenedores_total
                                     +
                                     COALESCE(
                                         (SELECT MAX(documentation_fee)
