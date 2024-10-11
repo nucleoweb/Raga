@@ -2,30 +2,22 @@
 
 namespace App\Livewire\Pages;
 
+use App\Exports\MarginsExport;
+use App\Imports\MarginsImport;
 use App\Models\Margins;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
+use Livewire\WithFileUploads;
 
 class MarginsIndex extends Component {
+    use WithFileUploads;
 
     public $margins = [];
     public $search = '';
     public $product_type, $service_type, $country_name, $port_cfs_airport_name, $supplier, $agent_fee, $handling_fee, $documentation_fee, $total_margin, $effective_date, $expire_date, $internal_notes, $external_notes;
-
-    protected $rules = [
-        'product_type' => 'required|string|max:100',
-        'service_type' => 'required|string|max:100',
-        'country_name' => 'required|string|max:100',
-        /*'port_cfs_airport_name' => 'nullable|string|max:150',
-        'supplier' => 'nullable|string|max:150',
-        'agent_fee' => 'nullable|numeric',
-        'handling_fee' => 'nullable|numeric',
-        'documentation_fee' => 'nullable|numeric',
-        'total_margin' => 'nullable|numeric',
-        'effective_date' => 'nullable|date',
-        'expire_date' => 'nullable|date',
-        'internal_notes' => 'nullable|string',
-        'external_notes' => 'nullable|string',*/
-    ];
+    public $csv;
+    public $csvName;
+    public $uploading = false;
 
     public function mount() {
         $this->margins = Margins::latest()->get();
@@ -44,8 +36,48 @@ class MarginsIndex extends Component {
         }
     }
 
+    public function updatedCsv() {
+        if ($this->csv) {
+            $this->csvName = $this->csv->getClientOriginalName();
+        }
+    }
+
+    public function uploadMargins() {
+        $this->validate([
+            'csv' => 'required|file|mimes:csv,txt',
+        ]);
+
+
+        Excel::import(new  MarginsImport(), $this->csv->getRealPath());
+
+        $this->uploading = false;
+
+        session()->flash('message', 'CSV file imported successfully.');
+    }
+
+    public function exportMargins() {
+        $date = now()->format('Y-m-d_H-i-s');
+        $fileName = 'margins_' . $date . '.xlsx';
+
+        return Excel::download(new MarginsExport, $fileName);
+    }
+
     public function save() {
-        $this->validate();
+        $this->validate([
+            'product_type' => 'required|string|max:100',
+            'service_type' => 'required|string|max:100',
+            'country_name' => 'required|string|max:100',
+            /*'port_cfs_airport_name' => 'nullable|string|max:150',
+            'supplier' => 'nullable|string|max:150',
+            'agent_fee' => 'nullable|numeric',
+            'handling_fee' => 'nullable|numeric',
+            'documentation_fee' => 'nullable|numeric',
+            'total_margin' => 'nullable|numeric',
+            'effective_date' => 'nullable|date',
+            'expire_date' => 'nullable|date',
+            'internal_notes' => 'nullable|string',
+            'external_notes' => 'nullable|string',*/
+        ]);
 
         $margin = Margins::create([
             'product_type' => $this->product_type,

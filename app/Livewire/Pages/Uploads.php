@@ -16,6 +16,10 @@
 
 		public $csv;
 
+        public function updatedCsv() {
+            dd('CSV Cargado');
+        }
+
 		public function uploadPortCharges() {
 			$this->validate([
 				'csv' => 'required|file|mimes:csv,txt',
