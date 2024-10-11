@@ -49,7 +49,7 @@ class LandCharges extends Component {
         } else {
             $this->landCharges = LandCharge::where('product_type', 'like', '%' . $this->search . '%')
                 ->orWhere('service_type', 'like', '%' . $this->search . '%')
-                ->orWhere('city_origin', 'like', '%' . $this->search . '%')
+                ->orWhere('country_name', 'like', '%' . $this->search . '%')
                 ->orWhere('port_cfs_airport_name', 'like', '%' . $this->search . '%')
                 ->orWhere('supplier_charge_name', 'like', '%' . $this->search . '%')
                 ->get();
