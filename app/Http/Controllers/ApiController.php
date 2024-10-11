@@ -159,8 +159,8 @@
                 $table .= '<tr>';
                 $table .= '<td>' . $descripcion . '</td>';
                 $table .= '<td>' . $cantidad . '</td>';
-                $table .= '<td>' . $costoPorUnidad . '</td>';
-                $table .= '<td>' . $costoTotal . '</td>';
+                $table .= '<td>' . 'USD ' . $costoPorUnidad . '</td>';
+                $table .= '<td>' . 'USD ' . $costoTotal . '</td>';
                 $table .= '</tr>';
             }
 

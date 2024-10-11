@@ -13,7 +13,7 @@
 
 <body>
 <div style="width: 700px;margin: 0px auto;">
-    <div style="background-color: #004e7d; text-align: center; padding: 10px 0px;">
+    <div style="background-color: #002060; text-align: center; padding: 10px 0px;">
         <img src="https://www.linc-ca.com/img/icon-white.da72e0d5.png" alt="" style="width: 150px">
     </div>
 

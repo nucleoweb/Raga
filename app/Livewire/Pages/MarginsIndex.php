@@ -8,6 +8,7 @@ use Livewire\Component;
 class MarginsIndex extends Component {
 
     public $margins = [];
+    public $search = '';
     public $product_type, $service_type, $country_name, $port_cfs_airport_name, $supplier, $agent_fee, $handling_fee, $documentation_fee, $total_margin, $effective_date, $expire_date, $internal_notes, $external_notes;
 
     protected $rules = [
@@ -28,6 +29,19 @@ class MarginsIndex extends Component {
 
     public function mount() {
         $this->margins = Margins::latest()->get();
+    }
+
+    public function updatedSearch() {
+        if (empty($this->search)) {
+            $this->margins = Margins::latest()->get();
+        } else {
+            $this->margins = Margins::where('product_type', 'like', '%' . $this->search . '%')
+                ->orWhere('service_type', 'like', '%' . $this->search . '%')
+                ->orWhere('country_name', 'like', '%' . $this->search . '%')
+                ->orWhere('product_type', 'like', '%' . $this->search . '%')
+                ->orWhere('internal_notes', 'like', '%' . $this->search . '%')
+                ->get();
+        }
     }
 
     public function save() {

@@ -27,7 +27,7 @@
 
 <body>
     <div style="width: 700px;margin: 0px auto;">
-        <div style="background-color: #004e7d; text-align: center; padding: 10px 0px;">
+        <div style="background-color: #002060; text-align: center; padding: 10px 0px;">
             <img src="https://www.linc-ca.com/img/icon-white.da72e0d5.png" alt="" style="width: 150px">
         </div>
 
@@ -49,6 +49,8 @@
             <div>
                 <p>Quedamos atentos a sus comentarios</p>
                 <p>Para consultas por favor comunicarse al (506) 7039-5587 con Nadia Corea</p>
+
+                <small style="margin-top: 10px;margin-bottom: 10px;">Notas</small>
 
                 <ul style="margin-bottom: 50px">
                     <li>

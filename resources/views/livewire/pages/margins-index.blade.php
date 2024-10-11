@@ -3,13 +3,12 @@
 
     <div class="mb-[35px] flex gap-10">
         <div>
-            <input type="text" placeholder="Search" class="search-input">
+            <input type="text" placeholder="Search" class="search-input" wire:model.live="search">
         </div>
 
         <div class="flex gap-5">
-            <span class="label">
+            <span class="label !hidden">
                 Etiqueta
-
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                         <path d="M17 7L7 17M7 7L17 17" stroke="#7288FF" stroke-linecap="round" stroke-linejoin="round"/>
@@ -17,7 +16,7 @@
                 </div>
             </span>
 
-                <span class="label">
+            <span class="label !hidden">
                 Etiqueta
 
                 <div>
