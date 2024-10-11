@@ -3,13 +3,48 @@
 namespace App\Livewire\Pages;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Illuminate\Validation\Rules;
 
 class UsersIndex extends Component {
     public $users = [];
+    public $search = '';
+    public $name;
+    public $email;
+    public $password;
+    public $password_confirmation;
+    public $selectRole;
+    public $roles = ['Administrador', 'Pricing', 'Operador logístico'];
 
     public function mount() {
-        $this->users = User::all();
+        $this->users = User::latest()->get();
+    }
+
+    public function updatedSearch() {
+        if (empty($this->search)) {
+            $this->users = User::latest()->get();
+        } else {
+            $this->users = User::where('name', 'like', '%' . $this->search . '%')
+                ->orWhere('email', 'like', '%' . $this->search . '%')
+                ->get();
+        }
+    }
+
+    public function register() {
+        $validated  = $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        $user = User::create($validated);
+
+        $user->assignRole($this->selectRole);
+
+        return redirect()->to('/users');
     }
 
     public function render() {
