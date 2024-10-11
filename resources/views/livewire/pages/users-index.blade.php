@@ -19,7 +19,6 @@
         <table>
             <thead>
             <tr>
-                <th><input type="checkbox"></th>
                 <th>Nombre</th>
                 <th>Email</th>
                 <th>Role</th>
@@ -30,7 +29,6 @@
             <tbody>
             @foreach($users as $key => $user)
                 <tr>
-                    <td><input type="checkbox"></td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->roles->pluck('name')->join(', ') }}</td>
