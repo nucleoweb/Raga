@@ -27,6 +27,7 @@
                 'expire_date' => $this->transformDate($row[10]),
                 'internal_notes' => $row[11],
                 'external_notes' => $row[12],
+                'user_id' => auth()->id(),
 			]);
 		}
 

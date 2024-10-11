@@ -7,6 +7,7 @@ use Livewire\Component;
 
 class PortCharges extends Component {
     public $portCharges = [];
+    public $search = '';
     public $product_type, $service_type, $origin_country, $pol, $pod, $dest_country, $carrier, $supplier_charge_name, $calculation_rule, $cost, $currency, $goodstype, $effective_date, $expire_date, $sell_rate, $internal_notes, $external_notes, $min_weight, $max_weight, $min_size, $max_size;
 
     protected $rules = [
@@ -32,6 +33,19 @@ class PortCharges extends Component {
         'min_size' => 'nullable|numeric',
         'max_size' => 'nullable|numeric',
     ];
+
+    public function updatedSearch() {
+        if (empty($this->search)) {
+            $this->portCharges = PortCharge::latest()->get();
+        } else {
+            $this->portCharges = PortCharge::where('product_type', 'like', '%' . $this->search . '%')
+                ->orWhere('service_type', 'like', '%' . $this->search . '%')
+                ->orWhere('origin_country', 'like', '%' . $this->search . '%')
+                ->orWhere('pol', 'like', '%' . $this->search . '%')
+                ->orWhere('pod', 'like', '%' . $this->search . '%')
+                ->get();
+        }
+    }
 
     public function save() {
         $this->validate();

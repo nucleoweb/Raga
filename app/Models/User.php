@@ -46,4 +46,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function margins() {
+        return $this->hasMany(Margins::class);
+    }
 }

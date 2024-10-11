@@ -17,6 +17,7 @@ export default {
             },
             boxShadow: {
                 'header': '0px 4px 30px 0px rgba(230, 229, 234, 0.75);',
+                'login': '8px 8px 30px 0px rgba(0, 0, 0, 0.28);'
             },
             backgroundImage: {
                 'home-hero': "url('/public/img/home-bg.png')",
