@@ -1,19 +1,27 @@
-<div class="page-wrapper">
+<div class="page-wrapper" x-data="{ showModal: false }">
     <h1>Lista de usuario</h1>
 
     <div class="mb-[35px] flex gap-10">
         <div>
-            <input type="text" placeholder="Search" class="search-input">
+            <input type="text" placeholder="Search" class="search-input" wire:model.live="search">
         </div>
-        <div class="flex gap-5">
-            <a href="{{ route('users.create') }}" class="label cursor-pointer">
-                Crear nuevo usuario
-            </a>
-        </div>
-
     </div>
 
-    <h3 class="text-[18px] text-[#190FDB] font-bold pb-[11px] mb-[40px] border-b-[2px] inline-block  border-[#190FDB] relative">Usuarios</h3>
+    <div class="flex justify-between items-center">
+        <div class="flex items-center gap-5">
+            <a href="{{ route('users') }}" class="text-[18px] text-[#190FDB] font-bold pb-[11px] mb-[40px] border-b-[2px] inline-block  border-[#190FDB] relative cursor-pointer">Usuarios</a>
+        </div>
+
+        <div class="flex justify-end items-center gap-2 mb-5">
+            <div class="flex justify-center items-center border-[3px]  border-[#565AFF] text-white hover:border-[#565AFF] bg-[#565AFF] hover:bg-[#565AFF] rounded-[6px] h-[46px] px-3 gap-2 group cursor-pointer duration-500" @click="showModal = true">
+                Crear nuevo usuario
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 8V16M8 12H16M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" class="group-hover:stroke-[#F7F7F7] transition-all duration-500" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+    </div>
 
     <div>
         <table>
@@ -67,5 +75,81 @@
             @endforeach
             </tbody>
         </table>
+    </div>
+
+    <div x-show="showModal" class="relative z-[9999]" aria-labelledby="modal-title" role="dialog" aria-modal="true" x-cloak>
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showModal = false" aria-hidden="true"></div>
+
+        <!-- Contenido del modal -->
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <!-- Panel del modal -->
+                <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-[600px] sm:p-6"  @click.away="showModal = false">
+                    <div>
+                        <form wire:submit="register">
+                            <!-- Name -->
+                            <div>
+                                <x-input-label for="name" :value="__('Nombre')" />
+                                <x-text-input wire:model="name" id="name" class="block mt-1 w-full" type="text" name="name" required autofocus autocomplete="name" />
+                                <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                            </div>
+
+                            <!-- Email Address -->
+                            <div class="mt-4">
+                                <x-input-label for="email" :value="__('Email')" />
+                                <x-text-input wire:model="email" id="email" class="block mt-1 w-full" type="email" name="email" required autocomplete="username" />
+                                <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mt-4">
+                                <x-input-label for="password" :value="__('Contraseña')" />
+
+                                <x-text-input wire:model="password" id="password" class="block mt-1 w-full"
+                                              type="password"
+                                              name="password"
+                                              required autocomplete="new-password" />
+
+                                <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="mt-4">
+                                <x-input-label for="password_confirmation" :value="__('Confirmar contraseña')" />
+
+                                <x-text-input wire:model="password_confirmation" id="password_confirmation" class="block mt-1 w-full"
+                                              type="password"
+                                              name="password_confirmation" required autocomplete="new-password" />
+
+                                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                            </div>
+
+                            <div class="mt-4">
+                                <x-input-label for="email" :value="__('Role')" />
+                                <select
+                                    id="selectRole"
+                                    name="selectRole"
+                                    defaultValue="Canada"
+                                    wire:model.live="selectRole"
+                                    class="mt-2 block w-full rounded-md border-[1px] py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6 h-[42px] border-[#9AABFF]">
+
+                                    <option>Selecciona un role</option>
+                                    @foreach($roles as $role)
+                                        <option value="{{ $role }}">{{ $role }}</option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('role')" class="mt-2" />
+                            </div>
+
+                            <div class="flex items-center justify-end mt-4">
+                                <x-primary-button class="ms-4">
+                                    {{ __('Registrar') }}
+                                </x-primary-button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

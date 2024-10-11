@@ -39,9 +39,9 @@
                 <li><strong>Destino: </strong> {{ $data['data']['unlocation_id'] ?? '' }}</li>
                 <li><strong>Carrier: </strong> {{ $data['data']['carrier'] ?? '' }}</li>
                 <li><strong>Tipo de transporte: </strong> {{ $data['data']['tipo_transporte'] ?? '' }}</li>
-                <li><strong>Contenedores 40HC: </strong> {{ $data['data']['cantidad_contenedores_40HQ'] ?? '' }}</li>
+                <li><strong>Contenedores 40": </strong> {{ $data['data']['cantidad_contenedores_40HC'] ?? 0 }}</li>
                 <li><strong>Origen: </strong> {{ $data['data']['pod'] ?? '' }}</li>
-                <li><strong>Contenedores 20": </strong> {{ $data['data']['cantidad_contenedores_20FT'] ?? '' }}</li>
+                <li><strong>Contenedores 20": </strong> {{ $data['data']['cantidad_contenedores_20FT'] ?? 0 }}</li>
             </ul>
 
             {!! $response['response'] !!}
