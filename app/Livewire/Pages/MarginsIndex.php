@@ -47,7 +47,7 @@ class MarginsIndex extends Component {
     public function save() {
         $this->validate();
 
-        Margins::create([
+        $margin = Margins::create([
             'product_type' => $this->product_type,
             'service_type' => $this->service_type,
             'country_name' => $this->country_name,
@@ -61,6 +61,7 @@ class MarginsIndex extends Component {
             'expire_date' => $this->expire_date,
             'internal_notes' => $this->internal_notes,
             'external_notes' => $this->external_notes,
+            'user_id' => auth()->id(),
         ]);
 
         session()->flash('message', 'Margin created successfully.');
