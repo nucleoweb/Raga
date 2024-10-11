@@ -3,12 +3,13 @@
 namespace App\Livewire\Pages;
 
 use App\Models\LandCharge;
+use App\Models\Margins;
 use Livewire\Component;
 use Illuminate\Database\Eloquent\Collection;
 
 class LandCharges extends Component {
     public Collection $landCharges;
-
+    public $search = '';
     public $product_type, $service_type, $city_origin, $port_cfs_airport_name, $trucker, $allowed_carriers, $supplier, $supplier_charge_name, $cost, $min_cost, $max_cost, $unlocation_id, $goodstype, $effective_date, $expire_date, $sell_rate, $internal_notes, $external_notes, $charge_type, $min_weight, $max_weight, $min_size, $max_size;
 
     protected $rules = [
@@ -40,6 +41,19 @@ class LandCharges extends Component {
 
     public function mount() {
         $this->landCharges = LandCharge::latest()->get();
+    }
+
+    public function updatedSearch() {
+        if (empty($this->search)) {
+            $this->landCharges = LandCharge::latest()->get();
+        } else {
+            $this->landCharges = LandCharge::where('product_type', 'like', '%' . $this->search . '%')
+                ->orWhere('service_type', 'like', '%' . $this->search . '%')
+                ->orWhere('country_name', 'like', '%' . $this->search . '%')
+                ->orWhere('product_type', 'like', '%' . $this->search . '%')
+                ->orWhere('internal_notes', 'like', '%' . $this->search . '%')
+                ->get();
+        }
     }
 
 

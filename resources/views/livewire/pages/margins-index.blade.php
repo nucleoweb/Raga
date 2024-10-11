@@ -56,7 +56,7 @@
             <thead>
                 <tr>
                     <th><input type="checkbox"></th>
-                    <th>Establecidos por ↓</th>
+                    <th>Establecidos por</th>
                     <th>Tipo de producto</th>
                     <th>Tipo de servicio</th>
                     <th>Nombre del país</th>
