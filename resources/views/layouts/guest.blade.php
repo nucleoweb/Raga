@@ -16,7 +16,9 @@
     </head>
     <body class="font-sans text-gray-900 antialiased">
         <div class="bg-home-hero h-screen bg-no-repeat bg-center flex justify-center items-center flex-col">
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <div class="w-full sm:max-w-md mt-6 px-[40px] py-[60px] bg-white overflow-hidden sm:rounded-lg shadow-login">
+                <x-login-brand />
+
                 {{ $slot }}
             </div>
         </div>
