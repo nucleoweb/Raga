@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
     Volt::route('register', 'pages.auth.register')
         ->middleware(['auth'])
         ->name('register');
-    
+
     Volt::route('verify-email', 'pages.auth.verify-email')
         ->name('verification.notice');
 
