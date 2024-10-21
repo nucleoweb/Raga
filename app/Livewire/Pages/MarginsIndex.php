@@ -19,6 +19,8 @@ class MarginsIndex extends Component {
     public $csvName;
     public $uploading = false;
 
+    public $selectedMargin;
+
     public function mount() {
         $this->margins = Margins::latest()->get();
     }
@@ -60,6 +62,23 @@ class MarginsIndex extends Component {
         $fileName = 'margins_' . $date . '.xlsx';
 
         return Excel::download(new MarginsExport, $fileName);
+    }
+
+    public function editMargin($id) {
+        $this->selectedMargin = Margins::findOrFail($id);
+        $this->product_type = $this->selectedMargin->product_type;
+        $this->service_type = $this->selectedMargin->service_type;
+        $this->country_name = $this->selectedMargin->country_name;
+        $this->port_cfs_airport_name = $this->selectedMargin->port_cfs_airport_name;
+        $this->supplier = $this->selectedMargin->supplier;
+        $this->agent_fee = $this->selectedMargin->agent_fee;
+        $this->handling_fee = $this->selectedMargin->handling_fee;
+        $this->documentation_fee = $this->selectedMargin->documentation_fee;
+        $this->total_margin = $this->selectedMargin->total_margin;
+        $this->effective_date = $this->selectedMargin->effective_date;
+        $this->expire_date = $this->selectedMargin->expire_date;
+        $this->internal_notes = $this->selectedMargin->internal_notes;
+        $this->external_notes = $this->selectedMargin->external_notes;
     }
 
     public function save() {
