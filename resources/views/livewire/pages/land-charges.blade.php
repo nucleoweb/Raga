@@ -356,7 +356,7 @@
                 <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-[800px] sm:p-6"  @click.away="modalEdit = false">
                     <div>
                         <div>
-                            <form wire:submit="save">
+                            <form wire:submit="updateLandCharge">
                                 <div class="grid grid-cols-3 gap-5 items-center mb-5">
                                     <div>
                                         <label for="product_type" class="block text-sm font-medium text-gray-700">Tipo de producto</label>

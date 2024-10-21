@@ -116,6 +116,42 @@ class LandCharges extends Component {
         return Excel::download(new LandChargesExport(), $fileName);
     }
 
+    public function updateLandCharge() {
+        $this->validate();
+
+        $this->selectedLandCharge->update([
+            'product_type' => $this->product_type,
+            'service_type' => $this->service_type,
+            'country_name' => $this->city_origin,
+            'port_cfs_airport_name' => $this->port_cfs_airport_name,
+            'trucker' => $this->trucker,
+            'allowed_carriers' => $this->allowed_carriers,
+            'supplier' => $this->supplier,
+            'supplier_charge_name' => $this->supplier_charge_name,
+            'cost' => $this->cost,
+            'min_cost' => $this->min_cost,
+            'max_cost' => $this->max_cost,
+            'unlocation_id' => $this->unlocation_id,
+            'goodstype' => $this->goodstype,
+            'effective_date' => $this->effective_date,
+            'expire_date' => $this->expire_date,
+            'sell_rate' => $this->sell_rate,
+            'internal_notes' => $this->internal_notes,
+            'external_notes' => $this->external_notes,
+            'charge_type' => $this->charge_type,
+            'min_weight' => $this->min_weight,
+            'max_weight' => $this->max_weight,
+            'min_size' => $this->min_size,
+            'max_size' => $this->max_size,
+        ]);
+
+        session()->flash('message', 'Port Charge updated successfully.');
+
+        $this->reset();
+
+        return redirect()->to('/land-charges');
+    }
+
     public function editLandCharge($id) {
         $this->selectedLandCharge = LandCharge::findOrFail($id);
         $this->product_type = $this->selectedLandCharge->product_type;

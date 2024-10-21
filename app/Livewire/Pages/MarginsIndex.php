@@ -81,6 +81,47 @@ class MarginsIndex extends Component {
         $this->external_notes = $this->selectedMargin->external_notes;
     }
 
+    public function updateMargin() {
+        $this->validate([
+            'product_type' => 'required|string|max:100',
+            'service_type' => 'required|string|max:100',
+            'country_name' => 'required|string|max:100',
+            /*'port_cfs_airport_name' => 'nullable|string|max:150',
+            'supplier' => 'nullable|string|max:150',
+            'agent_fee' => 'nullable|numeric',
+            'handling_fee' => 'nullable|numeric',
+            'documentation_fee' => 'nullable|numeric',
+            'total_margin' => 'nullable|numeric',
+            'effective_date' => 'nullable|date',
+            'expire_date' => 'nullable|date',
+            'internal_notes' => 'nullable|string',
+            'external_notes' => 'nullable|string',*/
+        ]);
+
+        $this->selectedMargin->update([
+            'product_type' => $this->product_type,
+            'service_type' => $this->service_type,
+            'country_name' => $this->country_name,
+            'port_cfs_airport_name' => $this->port_cfs_airport_name,
+            'supplier' => $this->supplier,
+            'agent_fee' => $this->agent_fee,
+            'handling_fee' => $this->handling_fee,
+            'documentation_fee' => $this->documentation_fee,
+            'total_margin' => $this->total_margin,
+            'effective_date' => $this->effective_date,
+            'expire_date' => $this->expire_date,
+            'internal_notes' => $this->internal_notes,
+            'external_notes' => $this->external_notes,
+            'user_id' => auth()->id(),
+        ]);
+
+        session()->flash('message', 'Margin updated successfully.');
+
+        $this->reset();
+
+        return redirect()->to('/dashboard');
+    }
+
     public function save() {
         $this->validate([
             'product_type' => 'required|string|max:100',
