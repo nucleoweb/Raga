@@ -3,15 +3,13 @@
 namespace App\Livewire\Pages;
 
 use App\Exports\LandChargesExport;
-use App\Exports\MarginsExport;
 use App\Imports\LandChargesImport;
 use App\Models\LandCharge;
 use Livewire\Component;
-use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 
 class LandCharges extends Component {
-    public Collection $landCharges;
+    public $landCharges = [];
     public $search = '';
     public $product_type, $service_type, $city_origin, $port_cfs_airport_name, $trucker, $allowed_carriers, $supplier, $supplier_charge_name, $cost, $min_cost, $max_cost, $unlocation_id, $goodstype, $effective_date, $expire_date, $sell_rate, $internal_notes, $external_notes, $charge_type, $min_weight, $max_weight, $min_size, $max_size;
     public $selectedLandCharge;
@@ -53,15 +51,17 @@ class LandCharges extends Component {
         if (empty($this->search)) {
             $this->landCharges = LandCharge::latest()->get();
         } else {
-            $this->landCharges = LandCharge::where('product_type', 'like', '%' . $this->search . '%')
-                ->orWhere('service_type', 'like', '%' . $this->search . '%')
-                ->orWhere('country_name', 'like', '%' . $this->search . '%')
-                ->orWhere('port_cfs_airport_name', 'like', '%' . $this->search . '%')
-                ->orWhere('supplier_charge_name', 'like', '%' . $this->search . '%')
+            $this->landCharges = LandCharge::where(function($query) {
+                $query->where('product_type', 'like', '%' . $this->search . '%')
+                    ->orWhere('service_type', 'like', '%' . $this->search . '%')
+                    ->orWhere('country_name', 'like', '%' . $this->search . '%')
+                    ->orWhere('port_cfs_airport_name', 'like', '%' . $this->search . '%')
+                    ->orWhere('trucker', 'like', '%' . $this->search . '%');
+            })
+                ->where('supplier_charge_name', 'like', '%IMPO%')
                 ->get();
         }
     }
-
 
     public function save() {
         $this->validate();

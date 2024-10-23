@@ -15,6 +15,11 @@ $logout = function (Logout $logout) {
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
+                <div class="flex items-center cursor-pointer btn-active-collapse" x-on:click="isCollapsed = !isCollapsed">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" style="stroke:#000;"></path>
+                    </svg>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
