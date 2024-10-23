@@ -50,6 +50,7 @@ class PortCharges extends Component {
                 ->orWhere('origin_country', 'like', '%' . $this->search . '%')
                 ->orWhere('pol', 'like', '%' . $this->search . '%')
                 ->orWhere('pod', 'like', '%' . $this->search . '%')
+                ->orWhere('carrier', 'like', '%' . $this->search . '%')
                 ->get();
         }
     }

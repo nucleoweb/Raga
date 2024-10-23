@@ -15,6 +15,7 @@ class UsersIndex extends Component {
     public $password;
     public $password_confirmation;
     public $selectRole;
+    public $selectedUser;
     public $roles = ['Administrador', 'Pricing', 'Operador logístico'];
 
     public function mount() {
@@ -29,6 +30,34 @@ class UsersIndex extends Component {
                 ->orWhere('email', 'like', '%' . $this->search . '%')
                 ->get();
         }
+    }
+
+    public function editUser($id) {
+        $this->selectedUser = User::find($id);
+        $this->name = $this->selectedUser->name;
+        $this->email = $this->selectedUser->email;
+        $this->selectRole = $this->selectedUser->roles->first()->name;
+    }
+
+    public function update() {
+        $validated = $this->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class.',email,'.$this->selectedUser->id],
+        ]);
+
+        if (!empty($this->password)) {
+            $passwordValidation = $this->validate([
+                'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            ]);
+
+            $validated['password'] = Hash::make($this->password);
+        }
+
+        $this->selectedUser->update($validated);
+
+        $this->selectedUser->syncRoles([$this->selectRole]);
+
+        return redirect()->to('/users');
     }
 
     public function register() {

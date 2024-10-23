@@ -36,6 +36,8 @@
             <p>A continuación, enviamos los detalles de la cotización solicitada: </p>
 
             <ul style="margin-bottom: 40px">
+                <li><strong>Fecha de emisión:  </strong> {{ \Carbon\Carbon::now()->format('d-m-Y') }}</li>
+                <li><strong>Fecha de vigencia: </strong> {{ \Carbon\Carbon::now()->addDays(7)->format('d-m-Y') }}</li>
                 <li><strong>Destino: </strong> {{ $data['data']['unlocation_id'] ?? '' }}</li>
                 <li><strong>Carrier: </strong> {{ $data['data']['carrier'] ?? '' }}</li>
                 <li><strong>Tipo de transporte: </strong> {{ $data['data']['tipo_transporte'] ?? '' }}</li>

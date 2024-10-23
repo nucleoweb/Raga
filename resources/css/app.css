@@ -7,6 +7,14 @@
     padding: 0px 25px;
 }
 
+.w-98 {
+    width: 98px!important;
+}
+
+.w-6rem {
+    padding-left: 6rem!important;
+}
+
 .page-wrapper h1 {
     color: #000;
     text-align: left;

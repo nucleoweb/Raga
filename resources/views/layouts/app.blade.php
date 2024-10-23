@@ -14,7 +14,7 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body>
+    <body x-data="{ isCollapsed: false }">
         <div>
             <div class="relative z-50 hidden" role="dialog" aria-modal="true">
                 <div class="fixed inset-0 bg-gray-900/80" aria-hidden="true"></div>
@@ -108,11 +108,11 @@
             </div>
 
             <!-- Static sidebar for desktop -->
-            <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+            <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col sidebar transition-all duration-500" :class="{ 'collapse-sidebar w-98': isCollapsed }" >
                 <!-- Sidebar component, swap this element with another sidebar if you like -->
                 <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-[#F7F7F7] px-6 pb-4">
                     <div class="flex h-[100px] shrink-0 items-center justify-center">
-                        <a href="/">
+                        <a href="/" x-show="!isCollapsed">
                             <svg xmlns="http://www.w3.org/2000/svg" width="157" height="53" viewBox="0 0 157 53" fill="none">
                                 <g clip-path="url(#clip0_2001_7199)">
                                     <path d="M61.386 40.1843H64.6212L56.5549 28.9998L57.5325 28.7766C60.832 28.0261 62.8812 25.418 62.8812 21.9699C62.8812 20.5463 62.513 17.9066 60.0436 16.2282C58.5137 15.1843 56.6625 14.7783 53.4394 14.7783H49.3828V40.1843H52.1075V29.2405H53.8198L61.3843 40.1843H61.386ZM52.1075 17.2159H54.1514C59.2448 17.2159 60.3145 19.8223 60.3145 22.0103C60.3145 25.1632 57.9667 27.0455 54.0316 27.0455H52.1075V17.2159Z" fill="#0C0C0C"/>
@@ -151,6 +151,35 @@
                                 </defs>
                             </svg>
                         </a>
+
+                        <a href="/" x-show="isCollapsed" x-cloak>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="53" viewBox="0 0 44 53" fill="none">
+                                <path d="M41.2757 44.0533C42.0671 43.1958 42.7995 42.2861 43.4727 41.3308C41.7828 35.9519 38.8694 31.0051 34.8619 26.8361C38.9512 22.3169 41.8943 17.013 43.5682 11.2816C42.8905 10.3059 42.149 9.37791 41.3507 8.50682C39.9497 14.518 37.068 20.0857 32.8831 24.7642C26.7901 17.9501 23.4535 9.25054 23.4444 0.0392554C22.5984 -0.0062324 21.7409 -0.0130556 20.8766 0.0233347C20.7652 0.0278835 20.656 0.0392554 20.5468 0.0460786C20.5355 9.25509 17.2012 17.9524 11.1081 24.7642C6.92779 20.0948 4.04841 14.5385 2.64739 8.53866C1.8468 9.4143 1.1099 10.3445 0.432129 11.3202C2.10836 17.0381 5.04914 22.3283 9.12713 26.8361C5.12875 30.9937 2.22208 35.9292 0.529928 41.2922C1.20087 42.2497 1.93323 43.1594 2.72472 44.0169C4.15303 38.3855 7.00512 33.1976 11.1081 28.9013C17.1921 35.2741 20.5378 43.5961 20.5468 52.4367C21.4066 52.4845 22.2777 52.4913 23.1556 52.4526C23.2534 52.4481 23.3489 52.439 23.4467 52.4321C23.4581 43.5939 26.8014 35.2719 32.8854 28.899C36.9975 33.2044 39.8519 38.406 41.2779 44.051L41.2757 44.0533ZM21.9934 42.302C20.3581 36.5478 17.3309 31.2553 13.0846 26.8361C17.3354 22.1372 20.3603 16.59 21.9934 10.5947C23.6264 16.59 26.6513 22.1372 30.9044 26.8361C26.6559 31.2553 23.6309 36.5478 21.9934 42.302Z" fill="url(#paint0_linear_822_2322)"/>
+                                <defs>
+                                    <linearGradient id="paint0_linear_822_2322" x1="-5.33118" y1="53.5898" x2="44.0914" y2="4.16501" gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="white"/>
+                                        <stop offset="0.01" stop-color="#F2FDFE"/>
+                                        <stop offset="0.09" stop-color="#A0F1F8"/>
+                                        <stop offset="0.15" stop-color="#6DE9F5"/>
+                                        <stop offset="0.17" stop-color="#5AE7F4"/>
+                                        <stop offset="0.2" stop-color="#5AE1F4"/>
+                                        <stop offset="0.23" stop-color="#5BD0F5"/>
+                                        <stop offset="0.27" stop-color="#5DB5F8"/>
+                                        <stop offset="0.31" stop-color="#6090FB"/>
+                                        <stop offset="0.35" stop-color="#6367FF"/>
+                                        <stop offset="0.4" stop-color="#5556F8"/>
+                                        <stop offset="0.49" stop-color="#312BE6"/>
+                                        <stop offset="0.55" stop-color="#190FDB"/>
+                                        <stop offset="0.62" stop-color="#4922B9"/>
+                                        <stop offset="0.72" stop-color="#853B90"/>
+                                        <stop offset="0.81" stop-color="#B54E6F"/>
+                                        <stop offset="0.89" stop-color="#D75C57"/>
+                                        <stop offset="0.95" stop-color="#EC6449"/>
+                                        <stop offset="1" stop-color="#F46844"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </a>
                     </div>
 
                     <nav class="flex flex-1 flex-col">
@@ -165,7 +194,10 @@
                                                     <path d="M12 3H16.2C17.8802 3 18.7202 3 19.362 3.32698C19.9265 3.6146 20.3854 4.07354 20.673 4.63803C21 5.27976 21 6.11984 21 7.8V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V12M8 13V17M16 11V17M12 7V17M2 5L5 2M5 2L8 5M5 2L5 8" stroke="#7288FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 </svg>
                                             </div>
-                                            Lista de  margenes
+
+                                            <span x-show="!isCollapsed">
+                                                Lista de  margenes
+                                            </span>
                                         </a>
                                     </li>
                                     <li>
@@ -176,7 +208,10 @@
                                                     <path d="M9 15.5H7.5C6.10444 15.5 5.40665 15.5 4.83886 15.6722C3.56045 16.06 2.56004 17.0605 2.17224 18.3389C2 18.9067 2 19.6044 2 21M14.5 7.5C14.5 9.98528 12.4853 12 10 12C7.51472 12 5.5 9.98528 5.5 7.5C5.5 5.01472 7.51472 3 10 3C12.4853 3 14.5 5.01472 14.5 7.5ZM11 21L14.1014 20.1139C14.2499 20.0715 14.3241 20.0502 14.3934 20.0184C14.4549 19.9902 14.5134 19.9558 14.5679 19.9158C14.6293 19.8707 14.6839 19.8161 14.7932 19.7068L21.25 13.25C21.9404 12.5597 21.9404 11.4403 21.25 10.75C20.5597 10.0596 19.4404 10.0596 18.75 10.75L12.2932 17.2068C12.1839 17.3161 12.1293 17.3707 12.0842 17.4321C12.0442 17.4866 12.0098 17.5451 11.9816 17.6066C11.9497 17.6759 11.9285 17.7501 11.8861 17.8987L11 21Z" stroke="#7288FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 </svg>
                                             </div>
-                                            Configuraciones de usuario
+
+                                            <span x-show="!isCollapsed">
+                                                Configuraciones de usuario
+                                            </span>
                                         </a>
                                     </li>
 
@@ -189,7 +224,9 @@
                                                 </svg>
                                             </div>
 
-                                            Lista de tarifas
+                                            <span x-show="!isCollapsed">
+                                                Lista de tarifas
+                                            </span>
                                         </a>
                                     </li>
                                 </ul>
@@ -203,7 +240,9 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.373-.03.748-.057 1.123-.08M15.75 18H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08M15.75 18.75v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5A3.375 3.375 0 0 0 6.375 7.5H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-1.5a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5H4.875c-.621 0-1.125.504-1.125 1.125v12c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V16.5a9 9 0 0 0-9-9Z" />
                                         </svg>
 
-                                        Prompts
+                                        <span x-show="!isCollapsed">
+                                            Prompts
+                                        </span>
                                     </a>
                                 </li>
 
@@ -214,7 +253,9 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
                                         </svg>
 
-                                        Cerrar sesión
+                                        <span x-show="!isCollapsed">
+                                            Cerrar sesión
+                                        </span>
                                     </a>
                                 </li>
                             </div>
@@ -223,7 +264,7 @@
                 </div>
             </div>
 
-            <div class="lg:pl-72">
+            <div class="lg:pl-72 transition-all duration-500" :class="{ 'w-6rem': isCollapsed }">
                 <livewire:layout.navigation />
 
                 <main class="py-10">
