@@ -38,12 +38,14 @@
             <ul style="margin-bottom: 40px">
                 <li><strong>Fecha de emisión:  </strong> {{ \Carbon\Carbon::now()->format('d-m-Y') }}</li>
                 <li><strong>Fecha de vigencia: </strong> {{ \Carbon\Carbon::now()->addDays(7)->format('d-m-Y') }}</li>
-                <li><strong>Destino: </strong> {{ $data['data']['unlocation_id'] ?? '' }}</li>
-                <li><strong>Carrier: </strong> {{ $data['data']['carrier'] ?? '' }}</li>
-                <li><strong>Tipo de transporte: </strong> {{ $data['data']['tipo_transporte'] ?? '' }}</li>
-                <li><strong>Contenedores 40": </strong> {{ $data['data']['cantidad_contenedores_40HC'] ?? 0 }}</li>
-                <li><strong>Origen: </strong> {{ $data['data']['pod'] ?? '' }}</li>
-                <li><strong>Contenedores 20": </strong> {{ $data['data']['cantidad_contenedores_20FT'] ?? 0 }}</li>
+                <li><strong>Dirección de entrega: </strong> {{ $data['data']['unlocation_id'] ?? '' }}</li>
+                <li><strong>Tipo de servicio: </strong> {{ $data['data']['tipo_transporte'] ?? '' }}</li>
+                <li><strong>Peso de la carga: </li>
+                <ul>
+                    <li><strong>Contenedores 40": </strong> {{ $data['data']['cantidad_contenedores_40HC'] ?? 0 }}</li>
+                    <li><strong>Contenedores 20": </strong> {{ $data['data']['cantidad_contenedores_20FT'] ?? 0 }}</li>
+                </ul>
+                <li><strong>Naviera: </strong> {{ $data['data']['carrier'] ?? '' }}</li>
             </ul>
 
             {!! $response['response'] !!}
